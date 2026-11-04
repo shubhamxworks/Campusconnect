@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Review and publish results for your CampusConnect event.">
+    <title>Event results — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/organizer.css">
+    <link rel="stylesheet" href="/css/results.css">
+    <script src="/js/pages/organizer-results.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/leaderboard.html">Leaderboards</a>
+        <a href="/organizer/dashboard.html">Organizer</a>
+      </nav>
+    </header>
+    <main class="results-main">
+      <section class="organizer-intro" aria-labelledby="results-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Organizer workspace</p>
+        <h1 id="results-title">Event <span>results.</span></h1>
+        <p id="results-event-title">Review team scores before publishing a leaderboard.</p>
+      </section>
+      <section class="results-panel" aria-label="Event results and publishing">
+        <div class="results-toolbar">
+          <a class="organizer-registrations-link" href="/organizer/dashboard.html">Back to events</a>
+          <button id="publish-results" class="organizer-primary" type="button" disabled>Publish results</button>
+        </div>
+        <p id="publish-status" class="publish-status"></p>
+        <div id="results-message" class="organizer-message" role="status" aria-live="polite">Loading event results…</div>
+        <div class="results-table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Team</th>
+                <th scope="col">Project</th>
+                <th scope="col">Average score</th>
+                <th scope="col">Judge scores</th>
+              </tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Submit and update your team's event project.">
+    <title>Project submission — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/submissions.css">
+    <script src="/js/pages/submissions.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/dashboard.html">My events</a>
+        <a href="/team.html">Teams</a>
+        <a href="/organizer/dashboard.html">Organize</a>
+        <a class="nav-cta" href="/profile.html">Profile</a>
+      </nav>
+    </header>
+
+    <main class="submission-main">
+      <section class="submission-intro" aria-labelledby="submission-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Show what you made</p>
+        <h1 id="submission-title">Project <span>submission.</span></h1>
+        <p>Share your team's project details and links with the event organizers.</p>
+      </section>
+
+      <section class="submission-panel" aria-label="Submit a team project">
+        <label class="submission-field event-select-field" for="submission-event">
+          <span>Event</span>
+          <select id="submission-event" required disabled>
+            <option value="">Loading events…</option>
+          </select>
+        </label>
+
+        <div id="submission-message" class="submission-message" role="status" aria-live="polite">
+          Loading your team…
+        </div>
+
+        <div id="team-required" class="team-required" hidden>
+          <p>Join or create a team for this event before submitting a project.</p>
+          <a id="team-required-link" class="submission-secondary" href="/team.html">Go to team management</a>
+        </div>
+
+        <form id="submission-form" hidden>
+          <p id="submission-team" class="submission-team"></p>
+          <label class="submission-field" for="project-name">
+            <span>Project name</span>
+            <input id="project-name" name="projectName" type="text" maxlength="100" required
+              placeholder="What did your team build?">
+          </label>
+          <label class="submission-field" for="project-description">
+            <span>Project description</span>
+            <textarea id="project-description" name="description" rows="6" maxlength="5000" required
+              placeholder="Describe the problem, your approach, and what your team accomplished."></textarea>
+          </label>
+          <label class="submission-field" for="repository-url">
+            <span>Repository link <small>(optional)</small></span>
+            <input id="repository-url" name="repositoryUrl" type="url" maxlength="2048"
+              placeholder="https://github.com/your-team/project">
+          </label>
+          <label class="submission-field" for="demo-url">
+            <span>Demo link <small>(optional)</small></span>
+            <input id="demo-url" name="demoUrl" type="url" maxlength="2048"
+              placeholder="https://your-project.example">
+          </label>
+          <div class="submission-actions">
+            <button id="save-submission" class="submission-submit" type="submit">Submit project</button>
+            <a id="submission-team-link" class="submission-secondary" href="/team.html">Manage team</a>
+          </div>
+          <p class="submission-note">One submission is shared by your entire team. Any team member can update it.</p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

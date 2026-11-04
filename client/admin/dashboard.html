@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CampusConnect administration overview.">
+    <title>Admin dashboard — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <script src="/js/admin-client.js" defer></script>
+    <script src="/js/pages/admin-dashboard.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">C</span><span>campus<span class="brand-accent">connect</span></span></a>
+      <nav class="site-nav" aria-label="Admin navigation">
+        <a href="/admin/dashboard.html" aria-current="page">Overview</a><a href="/admin/users.html">Users</a><a href="/admin/organizers.html">Organizers</a><a href="/admin/judges.html">Judges</a><a href="/admin/events.html">Events</a><a href="/admin/registrations.html">Registrations</a><a href="/admin/reports.html">Reports</a><a href="/admin/audit-logs.html">Audit logs</a><a href="/admin/settings.html">Settings</a>
+      </nav>
+    </header>
+    <main class="admin-main">
+      <section class="admin-intro"><p class="eyebrow"><span class="eyebrow-dot"></span> CampusConnect administration</p><h1>Platform <span>overview.</span></h1><p>Monitor accounts, events, and registrations.</p></section>
+      <div id="admin-message" class="admin-message" role="status" aria-live="polite">Loading platform summary…</div>
+      <section id="admin-summary" class="admin-summary" aria-label="Platform totals"></section>
+      <section class="admin-panel"><h2>Admin tools</h2><div class="admin-shortcuts">
+        <a href="/admin/users.html">Manage account roles</a><a href="/admin/events.html">Review events</a><a href="/admin/registrations.html">Review registrations</a><a href="/admin/reports.html">View platform reports</a><a href="/admin/audit-logs.html">View audit history</a><a href="/admin/settings.html">Platform settings</a>
+      </div></section>
+    </main>
+    <footer class="site-footer"><a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true">C</span><span>campus<span class="brand-accent">connect</span></span></a><p>Big ideas have a place here.</p><span>© <span data-current-year></span> CampusConnect</span></footer>
+  </body>
+</html>

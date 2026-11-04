@@ -1,0 +1,152 @@
+.registrations-panel {
+  padding: 24px;
+  border: 1px solid #e8ebf2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 14px 40px #283b6808;
+}
+
+.registration-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.registration-summary div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid #e8ebf2;
+  border-radius: 10px;
+  background: #fbfcff;
+}
+
+.registration-summary strong {
+  font-family: Manrope, sans-serif;
+  font-size: 21px;
+}
+
+.registration-summary span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.registrations-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  color: #647087;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.registrations-toolbar select {
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid #dfe4ed;
+  border-radius: 7px;
+  color: var(--ink);
+  background: #fff;
+  font: inherit;
+}
+
+.registrations-toolbar .organizer-registrations-link {
+  margin-left: auto;
+}
+
+.registrations-table-wrap {
+  overflow-x: auto;
+}
+
+.registrations-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.registrations-table th,
+.registrations-table td {
+  padding: 13px 10px;
+  border-bottom: 1px solid #edf0f5;
+  font-size: 11px;
+}
+
+.registrations-table th {
+  color: #778398;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.registrations-table td {
+  color: #37445d;
+}
+
+.registrations-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.registration-status {
+  display: inline-flex;
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: #18764b;
+  background: #e3f7ed;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.registration-status.is-waitlisted {
+  color: #9a5a08;
+  background: #fff2d9;
+}
+
+.registration-status.is-attended {
+  color: #506078;
+  background: #eef1f6;
+}
+
+.registration-status.is-cancelled {
+  color: #a13d3d;
+  background: #fff0ef;
+}
+
+.mark-attended-button {
+  padding: 7px 9px;
+  border: 1px solid #dfe4ed;
+  border-radius: 7px;
+  color: var(--blue);
+  background: #fff;
+  cursor: pointer;
+  font: 700 10px 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+
+.mark-attended-button:focus-visible {
+  outline: 3px solid #4268e866;
+  outline-offset: 3px;
+}
+
+.mark-attended-button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+@media (max-width: 700px) {
+  .registrations-panel {
+    padding: 17px 13px;
+  }
+
+  .registration-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .registrations-table th,
+  .registrations-table td {
+    padding: 11px 8px;
+  }
+}

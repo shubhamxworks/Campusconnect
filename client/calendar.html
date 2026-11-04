@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Browse campus events by month and see what is happening each day.">
+    <title>Event calendar — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/calendar.css">
+    <script src="/js/pages/calendar.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/dashboard.html">My events</a>
+        <a href="/organizer/dashboard.html">Organize</a>
+        <a href="/profile.html">Profile</a>
+        <a href="/login.html">Sign in</a>
+        <a class="nav-cta" href="/calendar.html" aria-current="page">Event calendar <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main class="calendar-main">
+      <section class="calendar-intro" aria-labelledby="calendar-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Make room for something good</p>
+        <h1 id="calendar-title">Campus, <span>on the calendar.</span></h1>
+        <p>Explore what’s happening this month, then choose a day to see the details.</p>
+      </section>
+
+      <section class="calendar-panel" aria-label="Campus event calendar">
+        <div class="calendar-toolbar">
+          <div>
+            <p class="calendar-kicker">Monthly view</p>
+            <h2 id="calendar-month" aria-live="polite"></h2>
+          </div>
+          <div class="calendar-controls" role="group" aria-label="Change calendar month">
+            <button id="previous-month" class="month-button" type="button" aria-label="Previous month">‹</button>
+            <button id="next-month" class="month-button" type="button" aria-label="Next month">›</button>
+          </div>
+        </div>
+
+        <div class="calendar-scroll">
+          <table class="month-grid" aria-label="Monthly event calendar">
+            <thead>
+              <tr>
+                <th scope="col"><abbr title="Sunday">Sun</abbr></th>
+                <th scope="col"><abbr title="Monday">Mon</abbr></th>
+                <th scope="col"><abbr title="Tuesday">Tue</abbr></th>
+                <th scope="col"><abbr title="Wednesday">Wed</abbr></th>
+                <th scope="col"><abbr title="Thursday">Thu</abbr></th>
+                <th scope="col"><abbr title="Friday">Fri</abbr></th>
+                <th scope="col"><abbr title="Saturday">Sat</abbr></th>
+              </tr>
+            </thead>
+            <tbody id="calendar-days"></tbody>
+          </table>
+        </div>
+        <p id="calendar-message" class="calendar-message" role="status" hidden></p>
+
+        <section class="day-events" aria-labelledby="selected-day-heading">
+          <div class="day-events-heading">
+            <div>
+              <p class="calendar-kicker">Selected day</p>
+              <h2 id="selected-day-heading"></h2>
+            </div>
+            <p class="timezone-note">Times shown in your local time zone.</p>
+          </div>
+          <div id="day-event-list" class="day-event-list" aria-live="polite" aria-busy="true"></div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

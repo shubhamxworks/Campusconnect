@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Event details on CampusConnect.">
+    <title>Event details — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/events.css">
+    <script src="/js/notifications-badge.js" defer></script>
+    <script src="/js/pages/event-details.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/schedule.html">My schedule</a>
+        <a href="/notifications.html">Notifications</a>
+        <a href="/leaderboard.html">Results</a>
+        <a href="/team.html">Teams</a>
+        <a href="/profile.html">Profile</a>
+        <a href="/dashboard.html">My events</a>
+        <a href="/organizer/dashboard.html">Organize</a>
+        <a href="/login.html">Sign in</a>
+        <a class="nav-cta" href="/events.html">All events <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main class="details-main">
+      <a class="back-link" href="/events.html"><span aria-hidden="true">←</span> All events</a>
+      <div id="event-details" aria-live="polite" aria-busy="true"></div>
+      <div id="details-message" class="event-message" role="status" hidden></div>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

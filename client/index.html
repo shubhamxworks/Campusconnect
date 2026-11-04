@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Discover campus events, meet your team, and make your next idea happen with CampusConnect.">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/assets/icons/campusconnect.svg" type="image/svg+xml">
+    <title>CampusConnect — Find your people. Build what's next.</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/notifications-badge.js" defer></script>
+    <script src="/js/app.js" defer></script>
+    <script src="/js/pwa.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/schedule.html">My schedule</a>
+        <a href="/notifications.html">Notifications</a>
+        <a href="/leaderboard.html">Results</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="/team.html">Teams</a>
+        <a href="/profile.html">Profile</a>
+        <a href="/organizer/dashboard.html">Organize</a>
+        <a href="/dashboard.html">My events</a>
+        <a href="/login.html">Sign in</a>
+        <a class="nav-cta" href="/events.html">Explore events <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="discover">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> Your campus, connected</p>
+          <h1>Find your people.<br>Build <span>what’s next.</span></h1>
+          <p class="hero-description">
+            One place for campus events, creative teams, and the ideas you can’t wait to bring to life.
+          </p>
+          <a class="primary-button" href="/events.html">Discover your next opportunity <span aria-hidden="true">→</span></a>
+          <button id="install-app" class="install-button" type="button" hidden>Install CampusConnect</button>
+          <div class="hero-note">
+            <span class="note-icon" aria-hidden="true">✦</span>
+            <span>Made for curious minds and big ideas.</span>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-label="Illustration of students collaborating around a project">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="art-card card-top">
+            <span class="card-icon" aria-hidden="true">✳</span>
+            <span><strong>Good ideas</strong><small>start together</small></span>
+          </div>
+          <div class="people-scene">
+            <div class="sun"></div>
+            <div class="person person-left"><span class="person-head"></span><span class="person-body"></span></div>
+            <div class="person person-center"><span class="person-head"></span><span class="person-body"></span></div>
+            <div class="person person-right"><span class="person-head"></span><span class="person-body"></span></div>
+            <div class="laptop"><span></span></div>
+            <div class="ground"></div>
+          </div>
+          <div class="art-card card-bottom">
+            <span class="sparkle" aria-hidden="true">✦</span>
+            <span><strong>Your next thing</strong><small>is closer than you think</small></span>
+          </div>
+          <span class="floating-star star-one" aria-hidden="true">✳</span>
+          <span class="floating-star star-two" aria-hidden="true">✦</span>
+        </div>
+      </section>
+
+      <section class="steps" id="how-it-works" aria-labelledby="steps-title">
+        <div class="steps-heading">
+          <p class="eyebrow">A little inspiration goes a long way</p>
+          <h2 id="steps-title">Make campus <span>your playground.</span></h2>
+        </div>
+        <div class="step-grid">
+          <article class="step-card">
+            <span class="step-number">01</span>
+            <h3>Find your spark</h3>
+            <p>Explore hackathons, workshops, and events happening around your campus.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">02</span>
+            <h3>Meet your people</h3>
+            <p>Connect with classmates who are just as excited to make something great.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">03</span>
+            <h3>Make it happen</h3>
+            <p>Bring your team together and turn that “what if?” into a real project.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span id="current-year"></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

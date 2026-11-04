@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="View your upcoming CampusConnect events and add them to your calendar.">
+    <title>My schedule — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/schedule.css">
+    <script src="/js/notifications-badge.js" defer></script>
+    <script src="/js/calendar-export.js" defer></script>
+    <script src="/js/pages/schedule.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/dashboard.html">My events</a>
+        <a href="/notifications.html">Notifications</a>
+      </nav>
+    </header>
+    <main class="schedule-main">
+      <section class="schedule-intro" aria-labelledby="schedule-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Your campus plans</p>
+        <h1 id="schedule-title">My <span>schedule.</span></h1>
+        <p>Your registered and waitlisted events, ready to add to your calendar.</p>
+      </section>
+      <section class="schedule-panel" aria-label="Your upcoming schedule">
+        <div class="schedule-toolbar">
+          <p id="schedule-summary" aria-live="polite"></p>
+          <button id="export-calendar" class="schedule-export" type="button" disabled>
+            Download calendar (.ics)
+          </button>
+        </div>
+        <div id="schedule-message" class="schedule-message" role="status" aria-live="polite">
+          Loading your schedule…
+        </div>
+        <div id="schedule-list" class="schedule-list" aria-live="polite" aria-busy="true"></div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

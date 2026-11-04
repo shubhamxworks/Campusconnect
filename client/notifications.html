@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Review CampusConnect registration and waitlist updates.">
+    <title>Notifications — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/notifications.css">
+    <script src="/js/notifications-badge.js" defer></script>
+    <script src="/js/pages/notifications.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/dashboard.html">My events</a>
+        <a href="/notifications.html" aria-current="page">Notifications</a>
+      </nav>
+    </header>
+    <main class="notifications-main">
+      <section class="notifications-intro" aria-labelledby="notifications-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Stay in the loop</p>
+        <h1 id="notifications-title">Your <span>notifications.</span></h1>
+        <p>Registration confirmations, waitlist changes, and event updates.</p>
+      </section>
+      <section class="notifications-panel" aria-label="Your notifications">
+        <div class="notifications-toolbar">
+          <p id="unread-count" class="unread-count" aria-live="polite"></p>
+          <div class="notification-toolbar-actions">
+            <button id="push-toggle" class="mark-all-button" type="button" disabled>Browser notifications</button>
+            <button id="mark-all-read" class="mark-all-button" type="button" disabled>Mark all as read</button>
+          </div>
+        </div>
+        <p id="push-help" class="notification-message" role="status" hidden></p>
+        <div id="notifications-message" class="notification-message" role="status" aria-live="polite">
+          Loading your notifications…
+        </div>
+        <div id="notification-list" class="notification-list" aria-live="polite"></div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

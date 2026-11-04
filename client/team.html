@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Create or join a student team for a campus event.">
+    <title>My teams — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/team.css">
+    <script src="/js/pages/team.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/dashboard.html">My events</a>
+        <a href="/profile.html">Profile</a>
+        <a href="/organizer/dashboard.html">Organize</a>
+        <a class="nav-cta" href="/team.html" aria-current="page">My teams</a>
+      </nav>
+    </header>
+
+    <main class="team-main">
+      <section class="team-intro" aria-labelledby="team-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Build something together</p>
+        <h1 id="team-title">Find your <span>people.</span></h1>
+        <p>Create a team for an event, or join one with an invitation code.</p>
+      </section>
+
+      <section class="team-workspace" aria-label="Event team management">
+        <label class="team-field event-picker">
+          <span>Choose an event</span>
+          <select id="team-event" required disabled>
+            <option value="">Loading events…</option>
+          </select>
+        </label>
+        <div id="team-message" class="team-message" role="status" aria-live="polite" hidden></div>
+        <section id="current-team" class="current-team" aria-labelledby="current-team-title" hidden>
+          <div class="team-heading">
+            <div>
+              <p class="team-kicker">Your event team</p>
+              <h2 id="current-team-title"></h2>
+            </div>
+            <button id="leave-team" class="secondary-button" type="button">Leave team</button>
+          </div>
+          <p id="team-event-title" class="team-event-title"></p>
+          <div class="invitation-panel">
+            <span>Invitation code</span>
+            <strong id="invitation-code"></strong>
+            <small>Share this code with teammates joining this event.</small>
+          </div>
+          <h3>Members</h3>
+          <ul id="team-members" class="member-list"></ul>
+          <a id="team-submission-link" class="submission-team-link" href="/submissions.html">Submit your team project</a>
+        </section>
+
+        <div id="team-options" class="team-options" hidden>
+          <form id="create-team-form" class="team-card">
+            <span class="team-card-icon" aria-hidden="true">✦</span>
+            <h2>Create a team</h2>
+            <p>Start a new team and invite classmates with your code.</p>
+            <label class="team-field">
+              <span>Team name</span>
+              <input id="team-name" name="name" type="text" minlength="2" maxlength="50" required
+                autocomplete="off" placeholder="e.g. Bright Ideas">
+            </label>
+            <button class="primary-button" type="submit">Create team <span aria-hidden="true">↗</span></button>
+          </form>
+
+          <form id="join-team-form" class="team-card">
+            <span class="team-card-icon join-icon" aria-hidden="true">↗</span>
+            <h2>Join a team</h2>
+            <p>Already have an invitation? Enter the code shared by a teammate.</p>
+            <label class="team-field">
+              <span>Invitation code</span>
+              <input id="invitation-input" name="invitationCode" type="text" minlength="32" maxlength="32"
+                required autocomplete="off" autocapitalize="characters" spellcheck="false"
+                placeholder="32-character code">
+            </label>
+            <button class="primary-button" type="submit">Join team <span aria-hidden="true">↗</span></button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Review and score assigned CampusConnect event submissions.">
+    <title>Judge workspace — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/judging.css">
+    <script src="/js/pages/judge-dashboard.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/profile.html">Profile</a>
+        <a class="nav-cta" href="/judge/dashboard.html" aria-current="page">Judge workspace</a>
+      </nav>
+    </header>
+
+    <main class="judge-main">
+      <section class="judge-intro" aria-labelledby="judge-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Judge workspace</p>
+        <h1>Review the <span>projects.</span></h1>
+        <p>Score each team from 0 to 100 and share actionable feedback.</p>
+      </section>
+      <div id="judge-message" class="organizer-message" role="status" aria-live="polite">Loading assigned events…</div>
+      <section class="judge-layout" aria-label="Assigned events and project submissions">
+        <section class="judge-event-panel">
+          <h2>Assigned events</h2>
+          <div id="assigned-events" class="assigned-events" aria-live="polite"></div>
+        </section>
+        <section class="judge-submission-panel" aria-labelledby="submission-heading">
+          <h2 id="submission-heading">Choose an event</h2>
+          <div id="submission-list" class="judge-submission-list"></div>
+        </section>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

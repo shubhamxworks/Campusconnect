@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Create and manage your CampusConnect events.">
+    <title>Organizer events — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/organizer.css">
+    <script src="/js/pages/organizer-events.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/profile.html">Profile</a>
+        <a class="nav-cta" href="/organizer/dashboard.html" aria-current="page">Organizer</a>
+      </nav>
+    </header>
+
+    <main class="organizer-main">
+      <section class="organizer-intro" aria-labelledby="organizer-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Organizer workspace</p>
+        <h1 id="organizer-title">Make it <span>happen.</span></h1>
+        <p>Create campus events and keep their details up to date.</p>
+      </section>
+
+      <section class="organizer-layout" aria-label="Manage your events">
+        <section class="organizer-list-panel" aria-labelledby="events-heading">
+          <div class="organizer-list-heading">
+            <div>
+              <p class="organizer-kicker">Your workspace</p>
+              <h2 id="events-heading">Your events</h2>
+            </div>
+            <button id="new-event" class="organizer-primary compact-button" type="button">Create event</button>
+          </div>
+          <div id="organizer-message" class="organizer-message" role="status" aria-live="polite">
+            Loading your events…
+          </div>
+          <div id="organizer-event-list" class="organizer-event-list" aria-live="polite"></div>
+        </section>
+
+        <section id="event-editor" class="event-editor" aria-labelledby="event-editor-title" hidden>
+          <div class="editor-heading">
+            <div>
+              <p class="organizer-kicker">Event details</p>
+              <h2 id="event-editor-title">Create an event</h2>
+            </div>
+            <button id="close-editor" class="editor-close" type="button" aria-label="Close event editor">×</button>
+          </div>
+          <form id="event-form">
+            <label class="organizer-field" for="event-title">
+              <span>Event name</span>
+              <input id="event-title" name="title" type="text" maxlength="180" required>
+            </label>
+            <div class="organizer-field-grid">
+              <label class="organizer-field" for="event-category">
+                <span>Category</span>
+                <select id="event-category" name="category" required>
+                  <option value="Hackathon">Hackathon</option>
+                  <option value="Workshop">Workshop</option>
+                  <option value="Networking">Networking</option>
+                  <option value="Competition">Competition</option>
+                  <option value="Talk">Talk</option>
+                </select>
+              </label>
+              <label class="organizer-field" for="event-format">
+                <span>Format</span>
+                <select id="event-format" name="format" required>
+                  <option value="In person">In person</option>
+                  <option value="Online">Online</option>
+                  <option value="Hybrid">Hybrid</option>
+                </select>
+              </label>
+            </div>
+            <label class="organizer-field" for="event-summary">
+              <span>Short summary</span>
+              <input id="event-summary" name="summary" type="text" maxlength="300" required>
+            </label>
+            <label class="organizer-field" for="event-description">
+              <span>Description</span>
+              <textarea id="event-description" name="description" rows="4" maxlength="10000" required></textarea>
+            </label>
+            <div class="organizer-field-grid">
+              <label class="organizer-field" for="event-start">
+                <span>Starts</span>
+                <input id="event-start" name="startsAt" type="datetime-local" required>
+              </label>
+              <label class="organizer-field" for="event-end">
+                <span>Ends</span>
+                <input id="event-end" name="endsAt" type="datetime-local" required>
+              </label>
+            </div>
+            <label class="organizer-field" for="event-deadline">
+              <span>Registration deadline</span>
+              <input id="event-deadline" name="registrationDeadline" type="datetime-local" required>
+            </label>
+            <div class="organizer-field-grid">
+              <label class="organizer-field" for="event-venue">
+                <span>Venue</span>
+                <input id="event-venue" name="venue" type="text" maxlength="180" required>
+              </label>
+              <label class="organizer-field" for="event-capacity">
+                <span>Capacity</span>
+                <input id="event-capacity" name="capacity" type="number" min="1" max="100000" step="1" required>
+              </label>
+            </div>
+            <label class="organizer-field" for="event-organizer">
+              <span>Organizer / club name</span>
+              <input id="event-organizer" name="organizer" type="text" maxlength="160" required>
+            </label>
+            <label class="organizer-field" for="event-tags">
+              <span>Tags <small>comma separated</small></span>
+              <input id="event-tags" name="tags" type="text" maxlength="500" placeholder="Beginner friendly, Prizes">
+            </label>
+            <div class="organizer-editor-actions">
+              <button id="save-event" class="organizer-primary" type="submit">Create event</button>
+              <button id="cancel-editor" class="organizer-secondary" type="button">Cancel</button>
+            </div>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

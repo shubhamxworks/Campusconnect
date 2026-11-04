@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Assign judges to your CampusConnect event.">
+    <title>Event judges — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/organizer.css">
+    <link rel="stylesheet" href="/css/judging.css">
+    <script src="/js/pages/organizer-judges.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/profile.html">Profile</a>
+        <a class="nav-cta" href="/organizer/dashboard.html">Organizer</a>
+      </nav>
+    </header>
+
+    <main class="organizer-main">
+      <section class="organizer-intro" aria-labelledby="judges-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Event workspace</p>
+        <h1>Assign <span>judges.</span></h1>
+        <p>Choose judge accounts to review team project submissions.</p>
+      </section>
+      <section class="judging-panel" aria-label="Manage event judges">
+        <a class="organizer-registrations-link" href="/organizer/dashboard.html">Back to events</a>
+        <label class="organizer-field" for="event-select">
+          <span>Event</span>
+          <select id="event-select" required></select>
+        </label>
+        <form id="judge-form" class="judge-form">
+          <label class="organizer-field" for="judge-email">
+            <span>Judge account email</span>
+            <input id="judge-email" name="email" type="email" maxlength="254" autocomplete="email" required>
+          </label>
+          <button class="organizer-primary" type="submit">Assign judge</button>
+        </form>
+        <div id="judges-message" class="organizer-message" role="status" aria-live="polite">Loading your events…</div>
+        <div id="judge-list" class="judge-list" aria-live="polite"></div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Sign in or create a CampusConnect student account.">
+    <title>CampusConnect — Sign in</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <script src="/js/pages/login.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/team.html">Teams</a>
+        <a href="/dashboard.html">My events</a>
+        <a href="/profile.html">Profile</a>
+      </nav>
+    </header>
+
+    <main class="auth-main">
+      <section class="auth-card" aria-labelledby="login-title">
+        <span class="auth-icon" aria-hidden="true">C</span>
+        <p class="eyebrow">Your campus, connected</p>
+        <h1 id="login-title">Welcome <span id="title-accent">back.</span></h1>
+        <p id="auth-description" class="auth-description">Sign in to find events and connect with your campus community.</p>
+        <div id="auth-message" class="auth-message" role="status" aria-live="polite" hidden></div>
+
+        <div id="auth-content" hidden>
+          <div class="auth-tabs" role="group" aria-label="Account options">
+            <button id="login-tab" class="auth-tab is-active" type="button" aria-pressed="true">Sign in</button>
+            <button id="register-tab" class="auth-tab" type="button" aria-pressed="false">Create account</button>
+          </div>
+
+          <form id="auth-form">
+            <label id="name-field" class="auth-field" hidden>
+              <span>Your name</span>
+              <input id="display-name" name="displayName" type="text" autocomplete="name" maxlength="120" placeholder="How should we call you?">
+            </label>
+            <label class="auth-field">
+              <span>Email address</span>
+              <input id="email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required>
+            </label>
+            <label class="auth-field">
+              <span>Password</span>
+              <input id="password" name="password" type="password" autocomplete="current-password" minlength="12" maxlength="128" placeholder="At least 12 characters" required>
+              <small id="password-help">Use your CampusConnect password.</small>
+            </label>
+            <button id="submit-auth" class="auth-submit" type="submit">Sign in</button>
+          </form>
+
+          <p class="auth-footnote">Passwords are securely hashed. Google sign-in can be added later.</p>
+        </div>
+
+        <div id="signed-in" class="signed-in-panel" hidden>
+          <p id="signed-in-greeting" class="signed-in-greeting"></p>
+          <a id="workspace-link" class="auth-submit auth-link" href="/dashboard.html">My events</a>
+          <button id="logout-button" class="logout-button" type="button">Sign out</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

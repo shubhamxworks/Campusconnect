@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Review your CampusConnect event registrations and waitlist status.">
+    <title>My events — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <script src="/js/notifications-badge.js" defer></script>
+    <script src="/js/pages/dashboard.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/schedule.html" aria-current="page">My schedule</a>
+        <a href="/notifications.html">Notifications</a>
+        <a href="/team.html">Teams</a>
+        <a href="/organizer/dashboard.html">Organize</a>
+        <a href="/dashboard.html" aria-current="page">My events</a>
+        <a class="nav-cta" href="/profile.html">Profile</a>
+      </nav>
+    </header>
+
+    <main class="dashboard-main">
+      <section class="dashboard-intro" aria-labelledby="dashboard-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Your campus plans</p>
+        <h1 id="dashboard-title">My <span>events.</span></h1>
+        <p id="dashboard-greeting">Your registrations and waitlist updates, all in one place.</p>
+      </section>
+
+      <section class="dashboard-stats" aria-label="Registration summary">
+        <article class="dashboard-stat">
+          <span id="upcoming-count" class="dashboard-stat-value">—</span>
+          <span class="dashboard-stat-label">Upcoming</span>
+        </article>
+        <article class="dashboard-stat">
+          <span id="waitlist-count" class="dashboard-stat-value">—</span>
+          <span class="dashboard-stat-label">Waitlisted</span>
+        </article>
+        <article class="dashboard-stat">
+          <span id="attended-count" class="dashboard-stat-value">—</span>
+          <span class="dashboard-stat-label">Attended</span>
+        </article>
+      </section>
+
+      <section class="my-events-section" aria-labelledby="my-events-heading">
+        <div class="my-events-heading">
+          <div>
+            <p class="eyebrow">Saved seats & plans</p>
+            <h2 id="my-events-heading">Your registrations</h2>
+          </div>
+          <a class="dashboard-discover-link" href="/events.html">Discover events <span aria-hidden="true">↗</span></a>
+        </div>
+        <div id="dashboard-message" class="dashboard-message" role="status" aria-live="polite">
+          Loading your registrations…
+        </div>
+        <div id="my-events-list" class="my-events-list" aria-live="polite" aria-busy="true"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

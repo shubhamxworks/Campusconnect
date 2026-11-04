@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CampusConnect event performance reports.">
+    <title>Platform reports — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/css/admin.css">
+    <script src="/js/admin-client.js" defer></script>
+    <script src="/js/pages/admin-reports.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">C</span><span>campus<span class="brand-accent">connect</span></span></a>
+      <nav class="site-nav" aria-label="Admin navigation"><a href="/admin/dashboard.html">Overview</a><a href="/admin/users.html">Users</a><a href="/admin/organizers.html">Organizers</a><a href="/admin/judges.html">Judges</a><a href="/admin/events.html">Events</a><a href="/admin/registrations.html">Registrations</a><a href="/admin/reports.html" aria-current="page">Reports</a><a href="/admin/audit-logs.html">Audit logs</a><a href="/admin/settings.html">Settings</a></nav>
+    </header>
+    <main class="admin-main">
+      <section class="admin-intro"><p class="eyebrow"><span class="eyebrow-dot"></span> Administration</p><h1>Platform <span>reports.</span></h1><p>Compare event attendance, participation, and judging activity.</p></section>
+      <section class="admin-panel"><div id="admin-message" class="admin-message" role="status" aria-live="polite">Loading reports…</div>
+        <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Event</th><th>Start</th><th>Capacity</th><th>Registered / attended</th><th>Waitlisted</th><th>Submissions</th><th>Judges</th><th>Avg score</th></tr></thead><tbody id="reports-body"></tbody></table></div>
+      </section>
+    </main>
+    <footer class="site-footer"><a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true">C</span><span>campus<span class="brand-accent">connect</span></span></a><p>Big ideas have a place here.</p><span>© <span data-current-year></span> CampusConnect</span></footer>
+  </body>
+</html>

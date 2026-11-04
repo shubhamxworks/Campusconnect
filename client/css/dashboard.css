@@ -1,0 +1,326 @@
+.dashboard-main {
+  max-width: 1144px;
+  min-height: calc(100vh - 154px);
+  margin: 0 auto;
+  padding: 48px 0 80px;
+}
+
+.dashboard-intro {
+  margin-bottom: 30px;
+}
+
+.dashboard-intro .eyebrow {
+  margin-bottom: 14px;
+}
+
+.dashboard-intro h1 {
+  margin-bottom: 10px;
+  font-size: clamp(40px, 5vw, 58px);
+}
+
+.dashboard-intro > p:last-child {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 42px;
+}
+
+.dashboard-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 20px 22px;
+  border: 1px solid #e8ebf2;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.dashboard-stat-value {
+  color: var(--ink);
+  font-family: Manrope, sans-serif;
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.dashboard-stat-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.my-events-section {
+  padding: 28px;
+  border: 1px solid #e8ebf2;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 14px 40px #283b6808;
+}
+
+.my-events-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.my-events-heading .eyebrow {
+  margin-bottom: 8px;
+}
+
+.my-events-heading h2 {
+  margin-bottom: 0;
+  font-size: 23px;
+  letter-spacing: -0.8px;
+}
+
+.dashboard-discover-link,
+.my-event-link,
+.dashboard-empty-link {
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.dashboard-discover-link span {
+  padding-left: 4px;
+}
+
+.my-events-list {
+  display: grid;
+  gap: 12px;
+}
+
+.my-event-card {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid #e8ebf2;
+  border-radius: 13px;
+  background: #fff;
+}
+
+.my-event-art {
+  display: grid;
+  min-height: 174px;
+  place-items: center;
+  color: #23375c;
+  background:
+    radial-gradient(circle at 75% 25%, #fff8 0 8%, transparent 9%),
+    linear-gradient(145deg, #dce8ff, #d8f3e7);
+  font-size: 46px;
+}
+
+.my-event-art[data-category="hackathon"] {
+  background: linear-gradient(145deg, #d9e3ff, #e5dcff);
+}
+
+.my-event-art[data-category="workshop"] {
+  background: linear-gradient(145deg, #d4f1e2, #ddedff);
+}
+
+.my-event-art[data-category="networking"] {
+  background: linear-gradient(145deg, #ffe8c8, #f8d9df);
+}
+
+.my-event-art[data-category="competition"] {
+  background: linear-gradient(145deg, #ffe5c7, #f2dfff);
+}
+
+.my-event-art[data-category="talk"] {
+  background: linear-gradient(145deg, #d9edff, #e8e4ff);
+}
+
+.my-event-content {
+  min-width: 0;
+  padding: 18px 20px;
+}
+
+.my-event-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+
+.my-event-category,
+.my-event-status {
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.my-event-category {
+  color: #5d6880;
+  background: #f0f2f7;
+}
+
+.my-event-status {
+  color: #18764b;
+  background: #e3f7ed;
+  text-transform: capitalize;
+}
+
+.my-event-status.is-waitlisted {
+  color: #9a5a08;
+  background: #fff2d9;
+}
+
+.my-event-status.is-attended {
+  color: #506078;
+  background: #eef1f6;
+}
+
+.my-event-content h3 {
+  margin-bottom: 7px;
+  font-family: Manrope, sans-serif;
+  font-size: 17px;
+  letter-spacing: -0.4px;
+}
+
+.my-event-date,
+.my-event-venue,
+.my-event-summary {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.my-event-summary {
+  margin-top: 9px;
+  margin-bottom: 10px;
+}
+
+.dashboard-message {
+  padding: 13px 15px;
+  border-radius: 9px;
+  color: #667187;
+  background: #f7f8fb;
+  font-size: 12px;
+}
+
+.dashboard-message.is-error {
+  color: #a33434;
+  background: #fff0ef;
+}
+
+.dashboard-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 38px 20px;
+  text-align: center;
+}
+
+.dashboard-empty-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 15px;
+  place-items: center;
+  border-radius: 15px;
+  color: var(--blue);
+  background: #edf1ff;
+  font-size: 23px;
+}
+
+.dashboard-empty-state h3 {
+  margin-bottom: 8px;
+  font-family: Manrope, sans-serif;
+  font-size: 18px;
+}
+
+.dashboard-empty-state p {
+  max-width: 390px;
+  margin-bottom: 15px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.dashboard-discover-link:focus-visible,
+.my-event-link:focus-visible,
+.dashboard-empty-link:focus-visible {
+  outline: 3px solid #4268e866;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+@media (max-width: 1240px) {
+  .dashboard-main {
+    margin: 0 48px;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-main {
+    margin: 0 20px;
+    padding: 32px 0 56px;
+  }
+
+  .dashboard-stats {
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .dashboard-stat {
+    padding: 14px 12px;
+  }
+
+  .dashboard-stat-value {
+    font-size: 23px;
+  }
+
+  .dashboard-stat-label {
+    font-size: 10px;
+  }
+
+  .my-events-section {
+    padding: 20px 15px;
+  }
+
+  .my-events-heading {
+    align-items: start;
+  }
+
+  .my-events-heading h2 {
+    font-size: 20px;
+  }
+
+  .my-event-card {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  .my-event-art {
+    min-height: 100%;
+    font-size: 34px;
+  }
+
+  .my-event-content {
+    padding: 14px 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .my-events-heading {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .my-event-card {
+    grid-template-columns: 1fr;
+  }
+
+  .my-event-art {
+    min-height: 84px;
+  }
+}

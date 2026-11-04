@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Review registrations for your CampusConnect event.">
+    <title>Event registrations — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/organizer.css">
+    <link rel="stylesheet" href="/css/organizer-registrations.css">
+    <script src="/js/pages/organizer-registrations.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/events.html">Discover events</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/profile.html">Profile</a>
+        <a class="nav-cta" href="/organizer/dashboard.html">Organizer</a>
+      </nav>
+    </header>
+
+    <main class="organizer-main">
+      <section class="organizer-intro" aria-labelledby="registration-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Your event, your community</p>
+        <h1 id="registration-title">Event <span>registrations.</span></h1>
+        <p id="event-title">Review attendees and mark attendance after the event.</p>
+      </section>
+
+      <section class="registrations-panel" aria-label="Event registration list">
+        <div class="registration-summary" aria-label="Registration totals">
+          <div><strong id="registered-count">—</strong><span>Registered</span></div>
+          <div><strong id="waitlisted-count">—</strong><span>Waitlisted</span></div>
+          <div><strong id="attended-count">—</strong><span>Attended</span></div>
+          <div><strong id="cancelled-count">—</strong><span>Cancelled</span></div>
+        </div>
+        <div class="registrations-toolbar">
+          <label for="status-filter">Show</label>
+          <select id="status-filter">
+            <option value="all">All registrations</option>
+            <option value="registered">Registered</option>
+            <option value="waitlisted">Waitlisted</option>
+            <option value="attended">Attended</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <a id="event-link" class="organizer-registrations-link" href="/organizer/dashboard.html">Back to events</a>
+        </div>
+        <div id="registrations-message" class="organizer-message" role="status" aria-live="polite">
+          Loading registrations…
+        </div>
+        <div class="registrations-table-wrap">
+          <table class="registrations-table">
+            <thead>
+              <tr>
+                <th scope="col">Student</th>
+                <th scope="col">Email</th>
+                <th scope="col">Status</th>
+                <th scope="col">Registered</th>
+                <th scope="col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="registrations-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

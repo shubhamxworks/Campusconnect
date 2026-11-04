@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <meta name="description" content="Find hackathons, workshops, talks, and other events happening around campus.">
+    <title>Discover events — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/events.css">
+    <script src="/js/pages/events.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="CampusConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/" >Home</a>
+        <a href="/calendar.html">Calendar</a>
+        <a href="/team.html">Teams</a>
+        <a href="/profile.html">Profile</a>
+        <a href="/organizer/dashboard.html">Organize</a>
+        <a href="/dashboard.html">My events</a>
+        <a href="/login.html">Sign in</a>
+        <a class="nav-cta" href="/events.html" aria-current="page">Discover events <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main class="events-main">
+      <section class="events-intro" aria-labelledby="events-title">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Find your next thing</p>
+        <h1 id="events-title">Good things are <span>happening.</span></h1>
+        <p>Meet new people, pick up a skill, or start building something. Your next campus moment is here.</p>
+      </section>
+
+      <section class="event-browser" aria-label="Browse campus events">
+        <div class="event-tools">
+          <label class="search-box">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <span class="visually-hidden">Search events</span>
+            <input id="event-search" type="search" placeholder="Search events, topics, or places" autocomplete="off">
+            <kbd>Ctrl K</kbd>
+          </label>
+          <p class="demo-note">A few ideas to get you started · Sample events</p>
+        </div>
+        <div id="event-categories" class="category-filters" role="group" aria-label="Filter by event category">
+          <button class="category-chip is-active" type="button" data-category="all" aria-pressed="true">All events</button>
+        </div>
+        <div class="results-heading">
+          <h2>Coming up</h2>
+          <p id="event-count" aria-live="polite"></p>
+        </div>
+        <div id="event-grid" class="event-grid" aria-live="polite" aria-busy="true"></div>
+        <div id="event-message" class="event-message" role="status" hidden></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>campus<span class="brand-accent">connect</span></span>
+      </a>
+      <p>Big ideas have a place here.</p>
+      <span>© <span data-current-year></span> CampusConnect</span>
+    </footer>
+  </body>
+</html>

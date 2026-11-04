@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CampusConnect administration settings and role counts.">
+    <title>Admin settings — CampusConnect</title>
+    <link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/css/admin.css">
+    <script src="/js/admin-client.js" defer></script>
+    <script src="/js/pages/admin-settings.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">C</span><span>campus<span class="brand-accent">connect</span></span></a>
+      <nav class="site-nav" aria-label="Admin navigation"><a href="/admin/dashboard.html">Overview</a><a href="/admin/users.html">Users</a><a href="/admin/organizers.html">Organizers</a><a href="/admin/judges.html">Judges</a><a href="/admin/events.html">Events</a><a href="/admin/registrations.html">Registrations</a><a href="/admin/reports.html">Reports</a><a href="/admin/audit-logs.html">Audit logs</a><a href="/admin/settings.html" aria-current="page">Settings</a></nav>
+    </header>
+    <main class="admin-main">
+      <section class="admin-intro"><p class="eyebrow"><span class="eyebrow-dot"></span> Administration</p><h1>Platform <span>settings.</span></h1><p>Review the active data source and account role configuration.</p></section>
+      <section class="admin-panel"><div id="admin-message" class="admin-message" role="status" aria-live="polite">Loading settings…</div>
+        <dl id="settings-list" class="admin-settings-list"></dl>
+        <div class="admin-note"><strong>Security note</strong><p>Initial admin provisioning is intentionally performed by a database administrator. Use the Users page to manage subsequent role changes. The final administrator cannot be demoted.</p></div>
+      </section>
+    </main>
+    <footer class="site-footer"><a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true">C</span><span>campus<span class="brand-accent">connect</span></span></a><p>Big ideas have a place here.</p><span>© <span data-current-year></span> CampusConnect</span></footer>
+  </body>
+</html>

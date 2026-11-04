@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "CampusConnect",
+  "short_name": "CampusConnect",
+  "description": "Discover campus events, meet your team, and build what's next.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#f5f7fb",
+  "icons": [
+    {
+      "src": "/assets/icons/campusconnect.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
