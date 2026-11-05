@@ -48,7 +48,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
        INNER JOIN teams AS t
          ON t.team_id = s.team_id AND t.event_id = s.event_id
        LEFT JOIN evaluations AS e ON e.submission_id = s.submission_id
-       WHERE s.event_id = ?
+       WHERE s.event_id = $1
        GROUP BY s.submission_id, t.team_name, s.project_name
        ${scoredOnly ? 'HAVING COUNT(e.evaluation_id) > 0' : ''}
        ORDER BY average_score DESC, t.team_name ASC, s.project_name ASC`,
@@ -63,7 +63,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
       try {
         await connection.beginTransaction();
         const [events] = await connection.execute(
-          'SELECT event_id FROM events WHERE event_id = ? AND organizer_id = ? LIMIT 1 FOR UPDATE',
+          'SELECT event_id FROM events WHERE event_id = $1 AND organizer_id = $2 LIMIT 1 FOR UPDATE',
           [eventId, organizerId],
         );
         if (events.length === 0) {
@@ -74,7 +74,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
         const [judges] = await connection.execute(
           `SELECT user_id, display_name, email
            FROM users
-           WHERE email = ? AND role = 'judge'
+           WHERE email = $1 AND role = 'judge'
            LIMIT 1
            FOR UPDATE`,
           [email],
@@ -86,8 +86,8 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
         }
         await connection.execute(
           `INSERT INTO event_judges (event_id, judge_id, assigned_by)
-           VALUES (?, ?, ?)
-           ON DUPLICATE KEY UPDATE assigned_by = VALUES(assigned_by)`,
+           VALUES ($1, $2, $3)
+           ON CONFLICT (event_id, judge_id) DO UPDATE SET assigned_by = EXCLUDED.assigned_by`,
           [eventId, judges[0].user_id, organizerId],
         );
         await connection.commit();
@@ -106,7 +106,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
 
     async listJudgesForOrganizer(organizerId, eventId) {
       const [events] = await pool.execute(
-        'SELECT event_id FROM events WHERE event_id = ? AND organizer_id = ? LIMIT 1',
+        'SELECT event_id FROM events WHERE event_id = $1 AND organizer_id = $2 LIMIT 1',
         [eventId, organizerId],
       );
       if (events.length === 0) {
@@ -117,7 +117,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
         `SELECT u.user_id, u.display_name, u.email
          FROM event_judges AS ej
          INNER JOIN users AS u ON u.user_id = ej.judge_id
-         WHERE ej.event_id = ?
+         WHERE ej.event_id = $1
          ORDER BY u.display_name ASC`,
         [eventId],
       );
@@ -130,14 +130,14 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
 
     async removeJudge(organizerId, eventId, judgeId) {
       const [events] = await pool.execute(
-        'SELECT event_id FROM events WHERE event_id = ? AND organizer_id = ? LIMIT 1',
+        'SELECT event_id FROM events WHERE event_id = $1 AND organizer_id = $2 LIMIT 1',
         [eventId, organizerId],
       );
       if (events.length === 0) {
         return null;
       }
       const [result] = await pool.execute(
-        'DELETE FROM event_judges WHERE event_id = ? AND judge_id = ?',
+        'DELETE FROM event_judges WHERE event_id = $1 AND judge_id = $2',
         [eventId, judgeId],
       );
       return result.affectedRows > 0;
@@ -153,7 +153,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
          LEFT JOIN submissions AS s ON s.event_id = e.event_id
          LEFT JOIN evaluations AS mine
            ON mine.submission_id = s.submission_id AND mine.judge_id = ej.judge_id
-         WHERE ej.judge_id = ?
+         WHERE ej.judge_id = $1
          GROUP BY e.event_id, e.title, e.starts_at, e.ends_at
          ORDER BY e.starts_at ASC`,
         [judgeId],
@@ -170,7 +170,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
 
     async listSubmissionsForJudge(judgeId, eventId) {
       const [assigned] = await pool.execute(
-        'SELECT event_id FROM event_judges WHERE event_id = ? AND judge_id = ? LIMIT 1',
+        'SELECT event_id FROM event_judges WHERE event_id = $1 AND judge_id = $2 LIMIT 1',
         [eventId, judgeId],
       );
       if (assigned.length === 0) {
@@ -194,8 +194,8 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
          INNER JOIN teams AS t
            ON t.team_id = s.team_id AND t.event_id = s.event_id
          LEFT JOIN evaluations AS evaluation
-           ON evaluation.submission_id = s.submission_id AND evaluation.judge_id = ?
-         WHERE s.event_id = ?
+           ON evaluation.submission_id = s.submission_id AND evaluation.judge_id = $1
+         WHERE s.event_id = $2
          ORDER BY s.created_at ASC, s.submission_id ASC`,
         [judgeId, eventId],
       );
@@ -225,7 +225,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
           `SELECT s.submission_id
            FROM event_judges AS ej
            INNER JOIN submissions AS s ON s.event_id = ej.event_id
-           WHERE ej.event_id = ? AND ej.judge_id = ? AND s.submission_id = ?
+           WHERE ej.event_id = $1 AND ej.judge_id = $2 AND s.submission_id = $3
            LIMIT 1
            FOR UPDATE`,
           [eventId, judgeId, submissionId],
@@ -237,17 +237,17 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
 
         await connection.execute(
           `INSERT INTO evaluations (submission_id, judge_id, score, feedback)
-           VALUES (?, ?, ?, ?)
-           ON DUPLICATE KEY UPDATE
-             score = VALUES(score),
-             feedback = VALUES(feedback),
+           VALUES ($1, $2, $3, $4)
+           ON CONFLICT (submission_id, judge_id) DO UPDATE SET
+             score = EXCLUDED.score,
+             feedback = EXCLUDED.feedback,
              updated_at = CURRENT_TIMESTAMP`,
           [submissionId, judgeId, score, feedback],
         );
         const [rows] = await connection.execute(
           `SELECT evaluation_id, score, feedback, updated_at
            FROM evaluations
-           WHERE submission_id = ? AND judge_id = ?
+           WHERE submission_id = $1 AND judge_id = $2
            LIMIT 1`,
           [submissionId, judgeId],
         );
@@ -265,7 +265,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
       const [events] = await pool.execute(
         `SELECT event_id, title, results_published_at
          FROM events
-         WHERE event_id = ? AND organizer_id = ?
+         WHERE event_id = $1 AND organizer_id = $2
          LIMIT 1`,
         [eventId, organizerId],
       );
@@ -292,7 +292,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
         const [events] = await connection.execute(
           `SELECT event_id, title, results_published_at
            FROM events
-           WHERE event_id = ? AND organizer_id = ?
+           WHERE event_id = $1 AND organizer_id = $2
            LIMIT 1
            FOR UPDATE`,
           [eventId, organizerId],
@@ -311,7 +311,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
               END) AS evaluated_submission_count
              FROM submissions AS s
              LEFT JOIN evaluations AS e ON e.submission_id = s.submission_id
-             WHERE s.event_id = ?`,
+             WHERE s.event_id = $1`,
             [eventId],
           );
           const submissionCount = Number(counts[0].submission_count);
@@ -327,8 +327,8 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
 
         await connection.execute(
           `UPDATE events
-           SET results_published_at = IF(?, UTC_TIMESTAMP(3), NULL)
-           WHERE event_id = ? AND organizer_id = ?`,
+           SET results_published_at = CASE WHEN $1 THEN CURRENT_TIMESTAMP ELSE NULL END
+           WHERE event_id = $2 AND organizer_id = $3`,
           [published, eventId, organizerId],
         );
         if (published && !events[0].results_published_at) {
@@ -341,24 +341,24 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
               e.event_id,
               'results_published',
               'Event results are live',
-              CONCAT('Results for ', e.title, ' are now published. Visit the event leaderboard to see the rankings.')
+              'Results for ' || e.title || ' are now published. Visit the event leaderboard to see the rankings.'
             FROM registrations AS r
             INNER JOIN events AS e ON e.event_id = r.event_id
-            WHERE r.event_id = ?
+            WHERE r.event_id = $1
               AND r.status IN ('registered', 'attended')`,
             [eventId],
           );
           const [recipients] = await connection.execute(
             `SELECT user_id
              FROM registrations
-             WHERE event_id = ? AND status IN ('registered', 'attended')`,
+             WHERE event_id = $1 AND status IN ('registered', 'attended')`,
             [eventId],
           );
           notificationRecipients = recipients.map((recipient) => recipient.user_id);
         }
         const results = await loadResults(connection, eventId);
         const [publishedRows] = await connection.execute(
-          'SELECT results_published_at FROM events WHERE event_id = ? LIMIT 1',
+          'SELECT results_published_at FROM events WHERE event_id = $1 LIMIT 1',
           [eventId],
         );
         await connection.commit();
@@ -402,7 +402,7 @@ function createMySqlJudgingRepository(pool, { sendPush = async () => {} } = {}) 
       const [events] = await pool.execute(
         `SELECT event_id, title, results_published_at
          FROM events
-         WHERE event_id = ? AND results_published_at IS NOT NULL
+         WHERE event_id = $1 AND results_published_at IS NOT NULL
          LIMIT 1`,
         [eventId],
       );

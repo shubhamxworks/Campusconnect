@@ -144,7 +144,7 @@ async function initializeLogin() {
       throw new Error(config.error || `Authentication setup check failed (${configResponse.status}).`);
     }
     if (!config.localAuthEnabled) {
-      showMessage('Local login needs MySQL and a session secret. Check the authentication setup in the README.');
+      showMessage('Local login needs a PostgreSQL connection and a session secret. Check the authentication setup in the README.');
       return;
     }
 

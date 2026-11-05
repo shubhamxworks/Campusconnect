@@ -10,4 +10,8 @@ services:
       - key: NODE_ENV
         value: production
       - key: EVENTS_DATA_SOURCE
-        value: sample
+        value: postgres
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true

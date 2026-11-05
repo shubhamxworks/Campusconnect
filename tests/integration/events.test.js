@@ -66,7 +66,7 @@ test('returns event details or a clear not-found response', async () => {
   assert.deepEqual(await missing.json(), { error: 'Event not found' });
 });
 
-test('reports local login and Google sign-in as unavailable without a MySQL auth configuration', async () => {
+test('reports local login and Google sign-in as unavailable without a PostgreSQL auth configuration', async () => {
   const configResponse = await fetch(`${baseUrl}/api/auth/config`);
   assert.deepEqual(await configResponse.json(), {
     googleSignInEnabled: false,

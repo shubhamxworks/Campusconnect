@@ -8,14 +8,21 @@ function createMySqlAdminRepository(pool) {
   return {
     async getSummary() {
       const [[users], [events], [registrations], [judges]] = await Promise.all([
-        pool.execute('SELECT COUNT(*) AS total, SUM(role = ?) AS organizers, SUM(role = ?) AS judges, SUM(role = ?) AS admins FROM users', ['organizer', 'judge', 'admin']),
+        pool.execute(
+          `SELECT COUNT(*) AS total,
+            COUNT(*) FILTER (WHERE role = $1) AS organizers,
+            COUNT(*) FILTER (WHERE role = $2) AS judges,
+            COUNT(*) FILTER (WHERE role = $3) AS admins
+           FROM users`,
+          ['organizer', 'judge', 'admin'],
+        ),
         pool.execute('SELECT COUNT(*) AS total FROM events'),
         pool.execute(
           `SELECT
             COUNT(*) AS total,
-            SUM(status = 'registered') AS registered,
-            SUM(status = 'waitlisted') AS waitlisted,
-            SUM(status = 'attended') AS attended
+            COUNT(*) FILTER (WHERE status = 'registered') AS registered,
+            COUNT(*) FILTER (WHERE status = 'waitlisted') AS waitlisted,
+            COUNT(*) FILTER (WHERE status = 'attended') AS attended
            FROM registrations`,
         ),
         pool.execute('SELECT COUNT(*) AS total FROM event_judges'),
@@ -42,11 +49,11 @@ function createMySqlAdminRepository(pool) {
       const conditions = [];
       const values = [];
       if (query) {
-        conditions.push('(display_name LIKE ? OR email LIKE ?)');
+        conditions.push(`(display_name ILIKE $${values.length + 1} OR email ILIKE $${values.length + 2})`);
         values.push(`%${query}%`, `%${query}%`);
       }
       if (role) {
-        conditions.push('role = ?');
+        conditions.push(`role = $${values.length + 1}`);
         values.push(role);
       }
       const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -79,7 +86,7 @@ function createMySqlAdminRepository(pool) {
         const [users] = await connection.execute(
           `SELECT user_id, email, display_name, role
            FROM users
-           WHERE user_id = ?
+           WHERE user_id = $1
            LIMIT 1
            FOR UPDATE`,
           [userId],
@@ -104,13 +111,13 @@ function createMySqlAdminRepository(pool) {
         }
         if (current.role !== role) {
           await connection.execute(
-            'UPDATE users SET role = ? WHERE user_id = ?',
+            'UPDATE users SET role = $1 WHERE user_id = $2',
             [role, userId],
           );
           await connection.execute(
             `INSERT INTO admin_audit_logs (
               actor_id, action, target_type, target_id, details
-            ) VALUES (?, 'user.role.updated', 'user', ?, ?)`,
+            ) VALUES ($1, 'user.role.updated', 'user', $2, $3)`,
             [actorId, String(userId), JSON.stringify({ from: current.role, to: role, email: current.email })],
           );
         }
@@ -166,7 +173,7 @@ function createMySqlAdminRepository(pool) {
 
     async listRegistrations(status = '') {
       const values = [];
-      const where = status ? 'WHERE r.status = ?' : '';
+      const where = status ? 'WHERE r.status = $1' : '';
       if (status) values.push(status);
       const [rows] = await pool.execute(
         `SELECT
@@ -277,7 +284,7 @@ function createMySqlAdminRepository(pool) {
 
     async getSettings() {
       const [[database], [roles]] = await Promise.all([
-        pool.execute('SELECT DATABASE() AS name'),
+        pool.execute('SELECT current_database() AS name'),
         pool.execute('SELECT role, COUNT(*) AS total FROM users GROUP BY role'),
       ]);
       return {

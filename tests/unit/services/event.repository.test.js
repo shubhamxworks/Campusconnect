@@ -8,35 +8,27 @@ const {
   mapEventRow,
 } = require('../../../server/repositories/event.repository');
 
-test('requires a valid data source and complete MySQL configuration', () => {
+test('requires a valid data source and Supabase PostgreSQL connection URL', () => {
   assert.throws(
     () => createEventRepository({ env: { EVENTS_DATA_SOURCE: 'unknown' } }),
-    /EVENTS_DATA_SOURCE must be either "sample" or "mysql"/,
+    /EVENTS_DATA_SOURCE must be either "sample" or "postgres"/,
   );
   assert.throws(
-    () => createEventRepository({ env: { EVENTS_DATA_SOURCE: 'mysql' } }),
-    /MYSQL_USER, MYSQL_DATABASE/,
+    () => createEventRepository({ env: { EVENTS_DATA_SOURCE: 'postgres' } }),
+    /SUPABASE_DB_URL or DATABASE_URL/,
   );
 });
 
-test('validates MySQL connection settings and applies a local default port', () => {
+test('validates Supabase PostgreSQL connection settings', () => {
   const config = getDatabaseConfig({
-    MYSQL_USER: 'campusconnect',
-    MYSQL_DATABASE: 'campusconnect',
+    DATABASE_URL: 'postgresql://campusconnect:secret@db.example.supabase.co:5432/postgres',
   });
 
-  assert.equal(config.host, 'localhost');
-  assert.equal(config.port, 3306);
-  assert.equal(config.password, '');
+  assert.equal(config.connectionString, 'postgresql://campusconnect:secret@db.example.supabase.co:5432/postgres');
+  assert.deepEqual(config.ssl, { rejectUnauthorized: true });
   assert.throws(
-    () =>
-      getDatabaseConfig({
-        MYSQL_HOST: 'localhost',
-        MYSQL_PORT: '70000',
-        MYSQL_USER: 'campusconnect',
-        MYSQL_DATABASE: 'campusconnect',
-      }),
-    /MYSQL_PORT must be an integer/,
+    () => getDatabaseConfig({ DATABASE_URL: 'https://example.com' }),
+    /must use the postgres or postgresql protocol/,
   );
 });
 
@@ -68,7 +60,7 @@ test('maps database event rows and UTC date values to the API shape', () => {
   assert.deepEqual(event.tags, ['Hands-on', 'All levels']);
 });
 
-test('parameterizes MySQL search, category, and event id values', async () => {
+test('parameterizes PostgreSQL search, category, and event id values', async () => {
   const calls = [];
   const pool = {
     async execute(sql, values = []) {
@@ -87,13 +79,12 @@ test('parameterizes MySQL search, category, and event id values', async () => {
 
   assert.deepEqual(listing, { events: [], total: 0, categories: ['Hackathon'] });
   assert.deepEqual(calls[0].values, ["Hackathon", "%mentor' or 1=1 --%"]);
-  assert.match(calls[0].sql, /e\.category = \?/);
-  assert.match(calls[0].sql, /LIKE \?/);
-  assert.match(calls[0].sql, /COLLATE utf8mb4_0900_ai_ci/);
+  assert.match(calls[0].sql, /e\.category = \$1/);
+  assert.match(calls[0].sql, /LIKE \$2/);
 
   await repository.findById("event' OR 1=1 --");
   assert.deepEqual(calls[2].values, ["event' OR 1=1 --"]);
-  assert.match(calls[2].sql, /WHERE e\.event_id = \?/);
+  assert.match(calls[2].sql, /WHERE e\.event_id = \$1/);
 });
 
 test('sample repository preserves current event discovery behavior', async () => {

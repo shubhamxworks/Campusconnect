@@ -1,36 +1,69 @@
-const mysql = require('mysql2/promise');
+const { Pool } = require('pg');
 
 function getDatabaseConfig(env = process.env) {
-  const required = ['MYSQL_USER', 'MYSQL_DATABASE'];
-  const missing = required.filter((key) => !env[key]);
-
-  if (missing.length > 0) {
-    throw new Error(`MySQL mode requires these environment variables: ${missing.join(', ')}`);
+  const connectionString = env.SUPABASE_DB_URL || env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error('PostgreSQL mode requires SUPABASE_DB_URL or DATABASE_URL.');
   }
-
-  const port = Number(env.MYSQL_PORT || 3306);
-  if (!Number.isInteger(port) || port < 1 || port > 65535) {
-    throw new Error('MYSQL_PORT must be an integer between 1 and 65535.');
+  let url;
+  try {
+    url = new URL(connectionString);
+  } catch {
+    throw new Error('DATABASE_URL must be a valid PostgreSQL connection URL.');
+  }
+  if (!['postgres:', 'postgresql:'].includes(url.protocol)) {
+    throw new Error('DATABASE_URL must use the postgres or postgresql protocol.');
   }
 
   return {
-    host: env.MYSQL_HOST || 'localhost',
-    port,
-    user: env.MYSQL_USER,
-    password: env.MYSQL_PASSWORD || '',
-    database: env.MYSQL_DATABASE,
+    connectionString,
+    ssl: { rejectUnauthorized: true },
+    max: 10,
+    idleTimeoutMillis: 30_000,
+    connectionTimeoutMillis: 10_000,
   };
 }
 
 function createDatabasePool(env = process.env) {
-  return mysql.createPool({
-    ...getDatabaseConfig(env),
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-    timezone: 'Z',
-    dateStrings: true,
-  });
+  return new CompatiblePool(new Pool(getDatabaseConfig(env)));
 }
 
-module.exports = { createDatabasePool, getDatabaseConfig };
+class CompatiblePool {
+  constructor(pool) {
+    this.pool = pool;
+  }
+
+  async execute(sql, values = []) {
+    return normalizeResult(await this.pool.query(sql, values));
+  }
+
+  async getConnection() {
+    const client = await this.pool.connect();
+    return {
+      execute: async (sql, values = []) => normalizeResult(await client.query(sql, values)),
+      beginTransaction: () => client.query('BEGIN'),
+      commit: () => client.query('COMMIT'),
+      rollback: () => client.query('ROLLBACK'),
+      release: () => client.release(),
+    };
+  }
+}
+
+function normalizeResult(result) {
+  if (result.command === 'SELECT') {
+    return [result.rows, result.fields];
+  }
+  const insertId = result.rows[0] ? Object.values(result.rows[0])[0] : undefined;
+  return [{
+    affectedRows: result.rowCount,
+    ...(insertId === undefined ? {} : { insertId }),
+    rows: result.rows,
+  }, result.fields];
+}
+
+module.exports = {
+  CompatiblePool,
+  createDatabasePool,
+  getDatabaseConfig,
+  normalizeResult,
+};

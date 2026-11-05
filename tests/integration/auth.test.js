@@ -33,7 +33,7 @@ const userRepository = {
   async createLocalUser({ email, displayName, passwordHash }) {
     if (users.has(email)) {
       const error = new Error('Duplicate email');
-      error.code = 'ER_DUP_ENTRY';
+      error.code = '23505';
       throw error;
     }
     const user = {
@@ -82,9 +82,8 @@ before(async () => {
   app.use(express.json());
   auth = createAuthRouter({
     env: {
-      EVENTS_DATA_SOURCE: 'mysql',
-      MYSQL_USER: 'test-user',
-      MYSQL_DATABASE: 'test-database',
+      EVENTS_DATA_SOURCE: 'postgres',
+      DATABASE_URL: 'postgresql://test-user:test-password@localhost:5432/test-database',
       SESSION_SECRET: 'test-session-secret-with-more-than-thirty-two-characters',
     },
     pool: sessionPool,

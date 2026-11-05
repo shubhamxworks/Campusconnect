@@ -27,12 +27,12 @@ function createMySqlNotificationRepository(pool) {
       await pool.execute(
         `INSERT INTO web_push_subscriptions (
           user_id, endpoint_hash, endpoint, p256dh_key, auth_key
-        ) VALUES (?, ?, ?, ?, ?)
-        ON DUPLICATE KEY UPDATE
-          user_id = VALUES(user_id),
-          endpoint = VALUES(endpoint),
-          p256dh_key = VALUES(p256dh_key),
-          auth_key = VALUES(auth_key)`,
+        ) VALUES ($1, $2, $3, $4, $5)
+        ON CONFLICT (endpoint_hash) DO UPDATE SET
+          user_id = EXCLUDED.user_id,
+          endpoint = EXCLUDED.endpoint,
+          p256dh_key = EXCLUDED.p256dh_key,
+          auth_key = EXCLUDED.auth_key`,
         [userId, endpointHash, subscription.endpoint, subscription.keys.p256dh, subscription.keys.auth],
       );
     },
@@ -40,7 +40,7 @@ function createMySqlNotificationRepository(pool) {
     async removePushSubscription(userId, endpoint) {
       const endpointHash = createHash('sha256').update(endpoint).digest('hex');
       const [result] = await pool.execute(
-        'DELETE FROM web_push_subscriptions WHERE user_id = ? AND endpoint_hash = ?',
+        'DELETE FROM web_push_subscriptions WHERE user_id = $1 AND endpoint_hash = $2',
         [userId, endpointHash],
       );
       return result.affectedRows > 0;
@@ -50,7 +50,7 @@ function createMySqlNotificationRepository(pool) {
       const [rows] = await pool.execute(
         `SELECT endpoint, p256dh_key, auth_key
          FROM web_push_subscriptions
-         WHERE user_id = ?`,
+         WHERE user_id = $1`,
         [userId],
       );
       return rows.map((row) => ({
@@ -64,7 +64,7 @@ function createMySqlNotificationRepository(pool) {
         pool.execute(
           `SELECT notification_id, event_id, notification_type, title, message, read_at, created_at
            FROM notifications
-           WHERE user_id = ?
+           WHERE user_id = $1
            ORDER BY created_at DESC, notification_id DESC
            LIMIT 100`,
           [userId],
@@ -72,7 +72,7 @@ function createMySqlNotificationRepository(pool) {
         pool.execute(
           `SELECT COUNT(*) AS unread_count
            FROM notifications
-           WHERE user_id = ? AND read_at IS NULL`,
+           WHERE user_id = $1 AND read_at IS NULL`,
           [userId],
         ),
       ]);
@@ -85,14 +85,14 @@ function createMySqlNotificationRepository(pool) {
     async markRead(userId, notificationId) {
       await pool.execute(
         `UPDATE notifications
-         SET read_at = COALESCE(read_at, UTC_TIMESTAMP(3))
-         WHERE notification_id = ? AND user_id = ?`,
+         SET read_at = COALESCE(read_at, CURRENT_TIMESTAMP)
+         WHERE notification_id = $1 AND user_id = $2`,
         [notificationId, userId],
       );
       const [rows] = await pool.execute(
         `SELECT notification_id, event_id, notification_type, title, message, read_at, created_at
          FROM notifications
-         WHERE notification_id = ? AND user_id = ?
+         WHERE notification_id = $1 AND user_id = $2
          LIMIT 1`,
         [notificationId, userId],
       );
@@ -102,8 +102,8 @@ function createMySqlNotificationRepository(pool) {
     async markAllRead(userId) {
       const [result] = await pool.execute(
         `UPDATE notifications
-         SET read_at = UTC_TIMESTAMP(3)
-         WHERE user_id = ? AND read_at IS NULL`,
+         SET read_at = CURRENT_TIMESTAMP
+         WHERE user_id = $1 AND read_at IS NULL`,
         [userId],
       );
       return result.affectedRows;

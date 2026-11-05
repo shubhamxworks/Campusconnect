@@ -13,7 +13,7 @@ function createAdminRouter({ repository, requireAuthenticated, requireSameOrigin
   const router = express.Router();
   const requireRepository = (_request, response, next) => {
     if (!repository) {
-      response.status(503).json({ error: 'Admin tools require MySQL to be configured.' });
+      response.status(503).json({ error: 'Admin tools require PostgreSQL to be configured.' });
       return;
     }
     next();

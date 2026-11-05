@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const { test } = require('node:test');
 const { getGoogleOAuthConfig } = require('../../../server/config/passport');
 const { createAuthRouter } = require('../../../server/routes/auth.routes');
-const { MySqlSessionStore } = require('../../../server/storage/mysql-session-store');
+const { PostgresSessionStore } = require('../../../server/storage/postgres-session-store');
 const { createUserRepository } = require('../../../server/repositories/user.repository');
 const { hashPassword, verifyPassword } = require('../../../server/utils/password');
 
@@ -15,9 +15,8 @@ test('Google OAuth stays disabled until both credentials are configured', () => 
   assert.throws(
     () => createAuthRouter({
       env: {
-        EVENTS_DATA_SOURCE: 'mysql',
-        MYSQL_USER: 'campusconnect',
-        MYSQL_DATABASE: 'campusconnect',
+        EVENTS_DATA_SOURCE: 'postgres',
+        DATABASE_URL: 'postgresql://campusconnect:secret@localhost:5432/campusconnect',
         GOOGLE_CLIENT_ID: 'client-id',
         GOOGLE_CLIENT_SECRET: 'client-secret',
         SESSION_SECRET: 'too-short',
@@ -67,7 +66,7 @@ test('requires a verified email before creating a Google-linked student account'
   assert.equal(connectionRequested, false);
 });
 
-test('stores, reads, and destroys sessions using parameterized MySQL queries', async () => {
+test('stores, reads, and destroys sessions using parameterized PostgreSQL queries', async () => {
   const rows = new Map();
   const calls = [];
   const pool = {
@@ -84,7 +83,7 @@ test('stores, reads, and destroys sessions using parameterized MySQL queries', a
       return [{ affectedRows: 1 }];
     },
   };
-  const store = new MySqlSessionStore(pool, { pruneInterval: 60_000 });
+  const store = new PostgresSessionStore(pool, { pruneInterval: 60_000 });
 
   try {
     const data = { cookie: { maxAge: 60_000 }, passport: { user: 7 } };
@@ -96,7 +95,7 @@ test('stores, reads, and destroys sessions using parameterized MySQL queries', a
       store.get('session-id', (error, value) => (error ? reject(error) : resolve(value)));
     });
     assert.deepEqual(fetched, data);
-    assert.match(calls[0].sql, /VALUES \(\?, \?, \?\)/);
+    assert.match(calls[0].sql, /VALUES \(\$1, \$2, \$3\)/);
     assert.deepEqual(calls[0].values.filter((value) => typeof value === 'string'), [
       'session-id',
       JSON.stringify(data),

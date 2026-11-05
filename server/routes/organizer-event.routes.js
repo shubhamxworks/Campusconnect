@@ -105,7 +105,7 @@ function createOrganizerEventRouter({
   const router = express.Router();
   const requireRepository = (_request, response, next) => {
     if (!repository) {
-      response.status(503).json({ error: 'Organizer event management requires MySQL to be configured.' });
+      response.status(503).json({ error: 'Organizer event management requires PostgreSQL to be configured.' });
       return;
     }
     next();
@@ -308,7 +308,7 @@ function createOrganizerEventRouter({
           event: await repository.create(request.authUser.id, event),
         });
       } catch (createError) {
-        if (createError.code === 'ER_DUP_ENTRY') {
+        if (createError.code === '23505') {
           response.status(409).json({ error: 'An event with that identifier already exists. Try again.' });
           return;
         }

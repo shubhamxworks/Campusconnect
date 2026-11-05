@@ -35,7 +35,7 @@ before(async () => {
     }),
   );
   app.use(
-    '/api/no-mysql',
+    '/api/no-postgres',
     createMyEventsRouter({
       repository: null,
       requireAuthenticated,
@@ -73,12 +73,12 @@ test('requires authentication and only returns the signed-in user’s events', a
   assert.deepEqual(requestedUserIds, [17]);
 });
 
-test('reports when MySQL-backed registrations are unavailable', async () => {
-  const response = await fetch(`${baseUrl}/api/no-mysql`, {
+test('reports when PostgreSQL-backed registrations are unavailable', async () => {
+  const response = await fetch(`${baseUrl}/api/no-postgres`, {
     headers: { 'x-test-user': '17' },
   });
   assert.equal(response.status, 503);
   assert.deepEqual(await response.json(), {
-    error: 'Your event registrations require MySQL to be configured.',
+    error: 'Your event registrations require PostgreSQL to be configured.',
   });
 });

@@ -6,12 +6,12 @@ function toUtcIso(value) {
   return new Date(/(?:Z|[+-]\d{2}:\d{2})$/i.test(dateValue) ? dateValue : `${dateValue}Z`).toISOString();
 }
 
-function toMysqlUtcDateTime(value) {
+function toPostgresUtcTimestamp(value) {
   const date = value instanceof Date ? value : new Date(value);
   if (!Number.isFinite(date.getTime())) {
     throw new TypeError('Event dates must be valid before they are stored.');
   }
-  return date.toISOString().slice(0, 23).replace('T', ' ');
+  return date.toISOString();
 }
 
 function mapManagedEvent(row) {
@@ -61,7 +61,7 @@ function createMySqlEventManagementRepository(pool) {
     async listForOrganizer(organizerId) {
       const [rows] = await pool.execute(
         `${eventSelect}
-         WHERE e.organizer_id = ?
+         WHERE e.organizer_id = $1
          ORDER BY e.starts_at ASC`,
         [organizerId],
       );
@@ -70,7 +70,7 @@ function createMySqlEventManagementRepository(pool) {
 
     async listRegistrations(organizerId, eventId) {
       const [ownedEvents] = await pool.execute(
-        'SELECT event_id FROM events WHERE event_id = ? AND organizer_id = ? LIMIT 1',
+        'SELECT event_id FROM events WHERE event_id = $1 AND organizer_id = $2 LIMIT 1',
         [eventId, organizerId],
       );
       if (ownedEvents.length === 0) {
@@ -86,7 +86,7 @@ function createMySqlEventManagementRepository(pool) {
           u.email
          FROM registrations AS r
          INNER JOIN users AS u ON u.user_id = r.user_id
-         WHERE r.event_id = ?
+         WHERE r.event_id = $1
          ORDER BY
            CASE r.status
              WHEN 'registered' THEN 1
@@ -112,7 +112,7 @@ function createMySqlEventManagementRepository(pool) {
       try {
         await connection.beginTransaction();
         const [events] = await connection.execute(
-          'SELECT event_id FROM events WHERE event_id = ? AND organizer_id = ? LIMIT 1 FOR UPDATE',
+          'SELECT event_id FROM events WHERE event_id = $1 AND organizer_id = $2 LIMIT 1 FOR UPDATE',
           [eventId, organizerId],
         );
         if (events.length === 0) {
@@ -123,7 +123,7 @@ function createMySqlEventManagementRepository(pool) {
         const [registrations] = await connection.execute(
           `SELECT registration_id, status, registered_at
            FROM registrations
-           WHERE registration_id = ? AND event_id = ?
+           WHERE registration_id = $1 AND event_id = $2
            LIMIT 1 FOR UPDATE`,
           [registrationId, eventId],
         );
@@ -142,7 +142,7 @@ function createMySqlEventManagementRepository(pool) {
           await connection.execute(
             `UPDATE registrations
              SET status = 'attended'
-             WHERE registration_id = ? AND event_id = ?`,
+             WHERE registration_id = $1 AND event_id = $2`,
             [registrationId, eventId],
           );
         }
@@ -169,7 +169,8 @@ function createMySqlEventManagementRepository(pool) {
             event_id, organizer_id, title, category, summary, description,
             starts_at, ends_at, registration_deadline, venue, format,
             organizer, capacity, tags, artwork
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+          RETURNING event_id`,
           [
             event.id,
             organizerId,
@@ -177,9 +178,9 @@ function createMySqlEventManagementRepository(pool) {
             event.category,
             event.summary,
             event.description,
-            toMysqlUtcDateTime(event.startsAt),
-            toMysqlUtcDateTime(event.endsAt),
-            toMysqlUtcDateTime(event.registrationDeadline),
+            toPostgresUtcTimestamp(event.startsAt),
+            toPostgresUtcTimestamp(event.endsAt),
+            toPostgresUtcTimestamp(event.registrationDeadline),
             event.venue,
             event.format,
             event.organizer,
@@ -188,7 +189,7 @@ function createMySqlEventManagementRepository(pool) {
             event.artwork,
           ],
         );
-        const [rows] = await connection.execute(`${eventSelect} WHERE e.event_id = ? LIMIT 1`, [event.id]);
+        const [rows] = await connection.execute(`${eventSelect} WHERE e.event_id = $1 LIMIT 1`, [event.id]);
         await connection.commit();
         return mapManagedEvent(rows[0]);
       } catch (error) {
@@ -206,7 +207,7 @@ function createMySqlEventManagementRepository(pool) {
         const [ownedEvents] = await connection.execute(
           `SELECT event_id, capacity
            FROM events
-           WHERE event_id = ? AND organizer_id = ?
+           WHERE event_id = $1 AND organizer_id = $2
            LIMIT 1
            FOR UPDATE`,
           [eventId, organizerId],
@@ -219,7 +220,7 @@ function createMySqlEventManagementRepository(pool) {
         const [registrationRows] = await connection.execute(
           `SELECT COUNT(*) AS registered_count
            FROM registrations
-           WHERE event_id = ? AND status IN ('registered', 'attended')`,
+           WHERE event_id = $1 AND status IN ('registered', 'attended')`,
           [eventId],
         );
         if (event.capacity < Number(registrationRows[0].registered_count)) {
@@ -230,28 +231,28 @@ function createMySqlEventManagementRepository(pool) {
 
         await connection.execute(
           `UPDATE events
-           SET title = ?,
-               category = ?,
-               summary = ?,
-               description = ?,
-               starts_at = ?,
-               ends_at = ?,
-               registration_deadline = ?,
-               venue = ?,
-               format = ?,
-               organizer = ?,
-               capacity = ?,
-               tags = ?,
-               artwork = ?
-           WHERE event_id = ? AND organizer_id = ?`,
+           SET title = $1,
+               category = $2,
+               summary = $3,
+               description = $4,
+               starts_at = $5,
+               ends_at = $6,
+               registration_deadline = $7,
+               venue = $8,
+               format = $9,
+               organizer = $10,
+               capacity = $11,
+               tags = $12,
+               artwork = $13
+           WHERE event_id = $14 AND organizer_id = $15`,
           [
             event.title,
             event.category,
             event.summary,
             event.description,
-            toMysqlUtcDateTime(event.startsAt),
-            toMysqlUtcDateTime(event.endsAt),
-            toMysqlUtcDateTime(event.registrationDeadline),
+            toPostgresUtcTimestamp(event.startsAt),
+            toPostgresUtcTimestamp(event.endsAt),
+            toPostgresUtcTimestamp(event.registrationDeadline),
             event.venue,
             event.format,
             event.organizer,
@@ -263,7 +264,7 @@ function createMySqlEventManagementRepository(pool) {
           ],
         );
         const [rows] = await connection.execute(
-          `${eventSelect} WHERE e.event_id = ? AND e.organizer_id = ? LIMIT 1`,
+          `${eventSelect} WHERE e.event_id = $1 AND e.organizer_id = $2 LIMIT 1`,
           [eventId, organizerId],
         );
         await connection.commit();

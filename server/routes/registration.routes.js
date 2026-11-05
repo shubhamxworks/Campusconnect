@@ -10,7 +10,7 @@ function createRegistrationRouter({ repository, requireAuthenticated, requireSam
   const router = express.Router();
   const requireRepository = (request, response, next) => {
     if (!repository) {
-      response.status(503).json({ error: 'Event registration requires MySQL to be configured.' });
+      response.status(503).json({ error: 'Event registration requires PostgreSQL to be configured.' });
       return;
     }
     next();

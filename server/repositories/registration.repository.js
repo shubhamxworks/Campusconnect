@@ -68,7 +68,7 @@ function createMySqlRegistrationRepository(
           r.registered_at
          FROM registrations AS r
          INNER JOIN events AS e ON e.event_id = r.event_id
-         WHERE r.user_id = ? AND r.status IN ('registered', 'waitlisted', 'attended')
+         WHERE r.user_id = $1 AND r.status IN ('registered', 'waitlisted', 'attended')
          ORDER BY e.starts_at ASC`,
         [userId],
       );
@@ -81,7 +81,7 @@ function createMySqlRegistrationRepository(
 
     async eventExists(eventId) {
       const [rows] = await pool.execute(
-        'SELECT event_id FROM events WHERE event_id = ? LIMIT 1',
+        'SELECT event_id FROM events WHERE event_id = $1 LIMIT 1',
         [eventId],
       );
       return rows.length > 0;
@@ -95,8 +95,8 @@ function createMySqlRegistrationRepository(
           r.registered_at
          FROM events AS e
          LEFT JOIN registrations AS r
-           ON r.event_id = e.event_id AND r.user_id = ?
-         WHERE e.event_id = ?
+           ON r.event_id = e.event_id AND r.user_id = $1
+         WHERE e.event_id = $2
          LIMIT 1`,
         [userId, eventId],
       );
@@ -116,7 +116,7 @@ function createMySqlRegistrationRepository(
         const [eventRows] = await connection.execute(
           `SELECT event_id, title, capacity, registration_deadline
            FROM events
-           WHERE event_id = ?
+           WHERE event_id = $1
            LIMIT 1
            FOR UPDATE`,
           [eventId],
@@ -134,7 +134,7 @@ function createMySqlRegistrationRepository(
         const [existingRows] = await connection.execute(
           `SELECT registration_id, status, registered_at
            FROM registrations
-           WHERE event_id = ? AND user_id = ?
+           WHERE event_id = $1 AND user_id = $2
            LIMIT 1
            FOR UPDATE`,
           [eventId, userId],
@@ -164,7 +164,7 @@ function createMySqlRegistrationRepository(
         const [countRows] = await connection.execute(
           `SELECT COUNT(*) AS registered_count
            FROM registrations
-           WHERE event_id = ? AND status IN ('registered', 'attended')`,
+           WHERE event_id = $1 AND status IN ('registered', 'attended')`,
           [eventId],
         );
         const registeredCount = Number(countRows[0].registered_count);
@@ -173,14 +173,14 @@ function createMySqlRegistrationRepository(
         if (existing) {
           await connection.execute(
             `UPDATE registrations
-             SET status = ?, registered_at = CURRENT_TIMESTAMP
-             WHERE registration_id = ?`,
+             SET status = $1, registered_at = CURRENT_TIMESTAMP
+             WHERE registration_id = $2`,
             [status, existing.registration_id],
           );
         } else {
           await connection.execute(
             `INSERT INTO registrations (event_id, user_id, status)
-             VALUES (?, ?, ?)`,
+             VALUES ($1, $2, $3)`,
             [eventId, userId, status],
           );
         }
@@ -198,7 +198,7 @@ function createMySqlRegistrationRepository(
           };
         await connection.execute(
           `INSERT INTO notifications (user_id, event_id, notification_type, title, message)
-           VALUES (?, ?, ?, ?, ?)`,
+           VALUES ($1, $2, $3, $4, $5)`,
           [userId, eventId, notification.type, notification.title, notification.message],
         );
 
@@ -226,7 +226,7 @@ function createMySqlRegistrationRepository(
         await connection.beginTransaction();
 
         const [eventRows] = await connection.execute(
-          'SELECT event_id, title FROM events WHERE event_id = ? LIMIT 1 FOR UPDATE',
+          'SELECT event_id, title FROM events WHERE event_id = $1 LIMIT 1 FOR UPDATE',
           [eventId],
         );
         if (eventRows.length === 0) {
@@ -237,7 +237,7 @@ function createMySqlRegistrationRepository(
         const [registrationRows] = await connection.execute(
           `SELECT registration_id, status
            FROM registrations
-           WHERE event_id = ? AND user_id = ?
+           WHERE event_id = $1 AND user_id = $2
            LIMIT 1
            FOR UPDATE`,
           [eventId, userId],
@@ -255,12 +255,12 @@ function createMySqlRegistrationRepository(
         await connection.execute(
           `UPDATE registrations
            SET status = 'cancelled'
-           WHERE registration_id = ?`,
+           WHERE registration_id = $1`,
           [registration.registration_id],
         );
         await connection.execute(
           `INSERT INTO notifications (user_id, event_id, notification_type, title, message)
-           VALUES (?, ?, 'registration_cancelled', 'Registration cancelled', ?)`,
+           VALUES ($1, $2, 'registration_cancelled', 'Registration cancelled', $3)`,
           [userId, eventId, `Your registration for ${eventRows[0].title} has been cancelled.`],
         );
 
@@ -270,7 +270,7 @@ function createMySqlRegistrationRepository(
           const [waitlistRows] = await connection.execute(
             `SELECT registration_id, user_id
              FROM registrations
-             WHERE event_id = ? AND status = 'waitlisted'
+             WHERE event_id = $1 AND status = 'waitlisted'
              ORDER BY registered_at ASC, registration_id ASC
              LIMIT 1
              FOR UPDATE`,
@@ -281,12 +281,12 @@ function createMySqlRegistrationRepository(
             await connection.execute(
               `UPDATE registrations
                SET status = 'registered', registered_at = CURRENT_TIMESTAMP
-               WHERE registration_id = ?`,
+               WHERE registration_id = $1`,
               [nextWaitlisted.registration_id],
             );
             await connection.execute(
               `INSERT INTO notifications (user_id, event_id, notification_type, title, message)
-               VALUES (?, ?, 'waitlist_promoted', 'A place opened up', ?)`,
+               VALUES ($1, $2, 'waitlist_promoted', 'A place opened up', $3)`,
               [
                 nextWaitlisted.user_id,
                 eventId,

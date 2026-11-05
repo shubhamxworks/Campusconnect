@@ -30,11 +30,11 @@ test('updates a user display name with parameterized SQL and returns the user', 
   });
   assert.deepEqual(queries, [
     {
-      sql: 'UPDATE users SET display_name = ? WHERE user_id = ?',
+      sql: 'UPDATE users SET display_name = $1 WHERE user_id = $2',
       values: ['Updated Student', 7],
     },
     {
-      sql: 'SELECT user_id, email, display_name, role FROM users WHERE user_id = ? LIMIT 1',
+      sql: 'SELECT user_id, email, display_name, role FROM users WHERE user_id = $1 LIMIT 1',
       values: [7],
     },
   ]);

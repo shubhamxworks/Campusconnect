@@ -77,7 +77,7 @@ test('reads only a submission belonging to the signed-in user’s event team', a
     updatedAt: '2026-11-02T12:30:00.000Z',
   });
   assert.deepEqual(pool.calls[1].values, ['event-1', 12]);
-  assert.match(pool.calls[1].sql, /tm\.user_id = \?/);
+  assert.match(pool.calls[1].sql, /tm\.user_id = \$2/);
 });
 
 test('returns distinct missing-event and missing-team results', async () => {
@@ -112,7 +112,7 @@ test('saves one team submission transactionally using parameterized SQL', async 
     'https://example.com/repo',
     '',
   ]);
-  assert.match(insert.sql, /ON DUPLICATE KEY UPDATE/);
+  assert.match(insert.sql, /ON CONFLICT \(event_id, team_id\) DO UPDATE/);
 });
 
 test('does not save when the student has no team for the event', async () => {

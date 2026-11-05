@@ -13,7 +13,7 @@ function createTeamRouter({ repository, requireAuthenticated, requireSameOrigin 
   const router = express.Router();
   const requireRepository = (_request, response, next) => {
     if (!repository) {
-      response.status(503).json({ error: 'Team management requires MySQL to be configured.' });
+      response.status(503).json({ error: 'Team management requires PostgreSQL to be configured.' });
       return;
     }
     next();

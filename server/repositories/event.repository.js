@@ -103,18 +103,18 @@ function createMySqlEventRepository(pool) {
     FROM events AS e`;
 
   return {
-    source: 'mysql',
+    source: 'postgres',
     async list({ query = '', category = '' } = {}) {
       const conditions = [];
       const values = [];
 
       if (category) {
-        conditions.push('e.category = ?');
+        conditions.push(`e.category = $${values.length + 1}`);
         values.push(category);
       }
 
       if (query) {
-        conditions.push(`LOWER(CONCAT_WS(
+        conditions.push(`CONCAT_WS(
           ' ',
           e.title,
           e.category,
@@ -122,8 +122,8 @@ function createMySqlEventRepository(pool) {
           e.description,
           e.venue,
           e.organizer,
-          CAST(e.tags AS CHAR)
-        )) COLLATE utf8mb4_0900_ai_ci LIKE ? COLLATE utf8mb4_0900_ai_ci`);
+          CAST(e.tags AS TEXT)
+        ) ILIKE $${values.length + 1}`);
         values.push(`%${query.toLocaleLowerCase()}%`);
       }
 
@@ -146,7 +146,7 @@ function createMySqlEventRepository(pool) {
       };
     },
     async findById(id) {
-      const [rows] = await pool.execute(`${eventSelect} WHERE e.event_id = ? LIMIT 1`, [id]);
+      const [rows] = await pool.execute(`${eventSelect} WHERE e.event_id = $1 LIMIT 1`, [id]);
       return rows.length > 0 ? mapEventRow(rows[0]) : null;
     },
     async checkHealth() {
@@ -163,8 +163,8 @@ function createEventRepository({ env = process.env, pool } = {}) {
     return createSampleEventRepository();
   }
 
-  if (source !== 'mysql') {
-    throw new Error('EVENTS_DATA_SOURCE must be either "sample" or "mysql".');
+  if (source !== 'postgres') {
+    throw new Error('EVENTS_DATA_SOURCE must be either "sample" or "postgres".');
   }
 
   if (!pool) {

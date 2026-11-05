@@ -1,6 +1,6 @@
 # CampusConnect
 
-CampusConnect is a campus event discovery and management platform. The starter includes a responsive landing page, a searchable and filterable event directory, event detail pages, and an Express API that can read from sample data or MySQL.
+CampusConnect is a campus event discovery and management platform. The starter includes a responsive landing page, a searchable and filterable event directory, event detail pages, and an Express API that can read from sample data or Supabase PostgreSQL.
 
 ## Requirements
 
@@ -23,11 +23,11 @@ Use `npm.cmd start` for a normal server start. Set `PORT` in `.env` to change th
 
 ## Deploy on Render
 
-The root `render.yaml` defines a free Render web service that runs the Express app and serves the frontend. It uses sample event data by default; accounts, registrations, organizer tools, and other MySQL-backed features require a separately hosted MySQL database.
+The root `render.yaml` defines a Render web service that runs the Express app and serves the frontend. CampusConnect uses Supabase PostgreSQL for accounts, registrations, organizer tools, and other database-backed features.
 
-To deploy, push this project to a GitHub repository, create a new Blueprint on Render, and connect that repository. Render will detect `render.yaml` and deploy the service. After deployment, open the service URL and check `/api/health`.
+Create a Supabase project first. In Render, create a Blueprint from the GitHub repository and provide the Supabase PostgreSQL connection string for `DATABASE_URL` when prompted. Use the Supabase session pooler URL for a persistent Node.js server. Keep database credentials private.
 
-Do not commit `.env` or put credentials in `render.yaml`. To enable MySQL-backed features, configure the MySQL environment variables and a private `SESSION_SECRET` in the Render service settings, set `EVENTS_DATA_SOURCE` to `mysql`, then run `npm run db:setup` against the hosted MySQL database. Render's service must be able to reach that database.
+After the Render service is deployed, run `npm run db:setup` from a local checkout with `DATABASE_URL` set to the Supabase connection string and `EVENTS_DATA_SOURCE=postgres`. This creates the tables and sample events. Then confirm `/api/health` reports `"dataSource":"postgres"`. Do not commit `.env` or put credentials in `render.yaml`.
 
 ## Installable app and offline behavior
 
@@ -43,42 +43,33 @@ Open the home page in a supported browser to install CampusConnect. The service 
 - `docs/` — project documentation.
 - `scripts/` — development and database utility scripts.
 
-## MySQL setup
+## Supabase setup
 
-The app defaults to clearly identified sample events, so the existing discovery experience works before a database is configured. To enable MySQL:
+The app defaults to clearly identified sample events. To enable database-backed features:
 
-1. Install and start MySQL 8.0.19 or newer.
-2. Copy `.env.example` to `.env`, set `EVENTS_DATA_SOURCE=mysql`, and enter the MySQL user, password, and database. `MYSQL_HOST` and `MYSQL_PORT` default to `localhost` and `3306`.
-3. Create the database and a dedicated local application user using a MySQL administrator account (replace the example password):
+1. Create a Supabase project and open **Project Settings → Database → Connection string**.
+2. Select the **Session pooler** connection string and copy its URI. Do not expose the database password.
+3. In a local `.env`, set `EVENTS_DATA_SOURCE=postgres`, `DATABASE_URL` to that URI, and a private `SESSION_SECRET` of at least 32 characters.
+4. Run `npm.cmd run db:setup` to create the PostgreSQL tables and insert demonstration event listings.
+5. Add the same `DATABASE_URL` in the Render service environment, keep `EVENTS_DATA_SOURCE=postgres`, and redeploy. Verify `/api/health` reports `"status":"ok"` and `"dataSource":"postgres"`.
 
-   ```sql
-   CREATE DATABASE campusconnect CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-   CREATE USER 'campusconnect'@'localhost' IDENTIFIED BY 'replace-with-a-strong-password';
-   GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, REFERENCES
-     ON campusconnect.* TO 'campusconnect'@'localhost';
-   ```
-
-   Put the same account and password in `.env`. If your Node app connects from another host, adjust the MySQL account host instead of using `'localhost'`.
-4. Run `npm.cmd run db:setup` to create the tables, add the password-hash and event-owner columns, and upsert the sample event listings. This also creates the MySQL-backed session table. Keep the `.env` file private.
-5. Run `npm.cmd run dev`. The health endpoint reports the active event data source; if MySQL is configured but unavailable, database-backed requests return an explicit server error rather than falling back to sample data.
-
-The schema defines users, sessions, events, registrations, notifications, student teams, team project submissions, event judge assignments, evaluations, and administrator audit logs. Event timestamps and result publication times are stored as UTC `DATETIME(3)` values. Seeded events are demonstration data, not live campus announcements.
+The schema defines users, sessions, events, registrations, notifications, student teams, team project submissions, event judge assignments, evaluations, and administrator audit logs. Row-level security is enabled without public policies; the Render server connects with its private PostgreSQL connection string and must never expose that string to browser code. Event timestamps are stored as timezone-aware UTC timestamps. Seeded events are demonstration data, not live campus announcements.
 
 ## Local login
 
-The login page supports student account creation and email/password sign-in. Configure `EVENTS_DATA_SOURCE=mysql` and the MySQL credentials in `.env`, then set a private `SESSION_SECRET` of at least 32 characters. Generate one locally with:
+The login page supports student account creation and email/password sign-in. Configure `EVENTS_DATA_SOURCE=postgres` and `DATABASE_URL` in `.env`, then set a private `SESSION_SECRET` of at least 32 characters. Generate one locally with:
 
 ```powershell
 node -e "console.log(require('node:crypto').randomBytes(48).toString('base64url'))"
 ```
 
-Run `npm.cmd run db:setup` to add the password-hash column and ensure the MySQL session table exists. Restart the app and open [http://localhost:3000/login.html](http://localhost:3000/login.html). Choose **Create account** to register; new accounts receive the student role.
+Run `npm.cmd run db:setup` to create the user and session tables. Restart the app and open [http://localhost:3000/login.html](http://localhost:3000/login.html). Choose **Create account** to register; new accounts receive the student role.
 
 Passwords must be between 12 and 128 characters and are stored as salted scrypt hashes. Login and registration requests are rate limited and checked for same-origin requests. Password reset and email verification are not implemented yet.
 
 ## Event registration
 
-Sign in with a student account to register from an event's detail page. Registrations require MySQL and are checked against the event's registration deadline and capacity. Once capacity is reached, new registrations are placed on the waitlist. Students can cancel their registration from the same page.
+Sign in with a student account to register from an event's detail page. Registrations require Supabase PostgreSQL and are checked against the event's registration deadline and capacity. Once capacity is reached, new registrations are placed on the waitlist. Students can cancel their registration from the same page.
 
 The API provides authenticated `GET`, `POST`, and `DELETE /api/events/:eventId/registration` endpoints. Mutating requests must be same-origin. When a registered student cancels, the earliest waitlisted student is promoted automatically in the same transaction. Leaving the waitlist does not affect the other waitlisted students.
 
@@ -90,7 +81,7 @@ The notifications page can optionally enable browser push. Generate a VAPID key 
 
 ## Student dashboard
 
-Open [http://localhost:3000/dashboard.html](http://localhost:3000/dashboard.html) to review upcoming registrations, waitlisted events, and events marked attended. The page requires sign-in and MySQL-backed registration data. Its authenticated `GET /api/my-events` endpoint only returns the signed-in student's non-cancelled registrations.
+Open [http://localhost:3000/dashboard.html](http://localhost:3000/dashboard.html) to review upcoming registrations, waitlisted events, and events marked attended. The page requires sign-in and PostgreSQL-backed registration data. Its authenticated `GET /api/my-events` endpoint only returns the signed-in student's non-cancelled registrations.
 
 ## Personalized schedule
 
@@ -146,4 +137,4 @@ Open [http://localhost:3000/calendar.html](http://localhost:3000/calendar.html) 
 
 ## Optional Google sign-in
 
-Google sign-in can be added later. It uses the same MySQL user and session tables. In Google Cloud Console, configure an OAuth consent screen, create a **Web application** client, add `http://localhost:3000` as an authorized JavaScript origin and `http://localhost:3000/api/auth/google/callback` as an authorized redirect URI, then set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_CALLBACK_URL` in the private `.env` file. Google OAuth state validation and PKCE are enabled. Keep credentials private. Production deployments must use HTTPS.
+Google sign-in can be added later. It uses the same PostgreSQL user and session tables. In Google Cloud Console, configure an OAuth consent screen, create a **Web application** client, add `http://localhost:3000` as an authorized JavaScript origin and `http://localhost:3000/api/auth/google/callback` as an authorized redirect URI, then set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_CALLBACK_URL` in the private `.env` file. Google OAuth state validation and PKCE are enabled. Keep credentials private. Production deployments must use HTTPS.

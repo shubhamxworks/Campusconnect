@@ -45,7 +45,7 @@ function createMySqlSubmissionRepository(pool) {
        FROM submissions AS s
        INNER JOIN teams AS t
          ON t.team_id = s.team_id AND t.event_id = s.event_id
-       WHERE s.event_id = ? AND s.team_id = ?
+       WHERE s.event_id = $1 AND s.team_id = $2
        LIMIT 1`,
       [eventId, teamId],
     );
@@ -55,7 +55,7 @@ function createMySqlSubmissionRepository(pool) {
   return {
     async getForUser(eventId, userId) {
       const [eventRows] = await pool.execute(
-        'SELECT event_id FROM events WHERE event_id = ? LIMIT 1',
+        'SELECT event_id FROM events WHERE event_id = $1 LIMIT 1',
         [eventId],
       );
       if (eventRows.length === 0) {
@@ -67,7 +67,7 @@ function createMySqlSubmissionRepository(pool) {
          FROM teams AS t
          INNER JOIN team_members AS tm
            ON tm.team_id = t.team_id AND tm.event_id = t.event_id
-         WHERE t.event_id = ? AND tm.user_id = ?
+         WHERE t.event_id = $1 AND tm.user_id = $2
          LIMIT 1`,
         [eventId, userId],
       );
@@ -90,7 +90,7 @@ function createMySqlSubmissionRepository(pool) {
          FROM submissions AS s
          INNER JOIN teams AS t
            ON t.team_id = s.team_id AND t.event_id = s.event_id
-         WHERE s.event_id = ? AND s.team_id = ?
+         WHERE s.event_id = $1 AND s.team_id = $2
          LIMIT 1`,
         [eventId, teamRows[0].team_id],
       );
@@ -103,7 +103,7 @@ function createMySqlSubmissionRepository(pool) {
         await connection.beginTransaction();
 
         const [eventRows] = await connection.execute(
-          'SELECT event_id FROM events WHERE event_id = ? LIMIT 1 FOR UPDATE',
+          'SELECT event_id FROM events WHERE event_id = $1 LIMIT 1 FOR UPDATE',
           [eventId],
         );
         if (eventRows.length === 0) {
@@ -116,7 +116,7 @@ function createMySqlSubmissionRepository(pool) {
            FROM teams AS t
            INNER JOIN team_members AS tm
              ON tm.team_id = t.team_id AND tm.event_id = t.event_id
-           WHERE t.event_id = ? AND tm.user_id = ?
+           WHERE t.event_id = $1 AND tm.user_id = $2
            LIMIT 1
            FOR UPDATE`,
           [eventId, userId],
@@ -137,13 +137,13 @@ function createMySqlSubmissionRepository(pool) {
             repository_url,
             demo_url
           )
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-          ON DUPLICATE KEY UPDATE
-            submitted_by = VALUES(submitted_by),
-            project_name = VALUES(project_name),
-            description = VALUES(description),
-            repository_url = VALUES(repository_url),
-            demo_url = VALUES(demo_url),
+          VALUES ($1, $2, $3, $4, $5, $6, $7)
+          ON CONFLICT (event_id, team_id) DO UPDATE SET
+            submitted_by = EXCLUDED.submitted_by,
+            project_name = EXCLUDED.project_name,
+            description = EXCLUDED.description,
+            repository_url = EXCLUDED.repository_url,
+            demo_url = EXCLUDED.demo_url,
             updated_at = CURRENT_TIMESTAMP`,
           [
             eventId,

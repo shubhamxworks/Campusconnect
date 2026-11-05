@@ -10,7 +10,7 @@ function createResultsRouter(repository) {
   const router = express.Router();
   const requireRepository = (_request, response, next) => {
     if (!repository) {
-      response.status(503).json({ error: 'Event results require MySQL to be configured.' });
+      response.status(503).json({ error: 'Event results require PostgreSQL to be configured.' });
       return;
     }
     next();

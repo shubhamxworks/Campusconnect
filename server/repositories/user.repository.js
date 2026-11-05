@@ -15,7 +15,7 @@ function createUserRepository(pool) {
   return {
     async findById(id) {
       const [rows] = await pool.execute(
-        'SELECT user_id, email, display_name, role FROM users WHERE user_id = ? LIMIT 1',
+        'SELECT user_id, email, display_name, role FROM users WHERE user_id = $1 LIMIT 1',
         [id],
       );
       return toUser(rows[0]);
@@ -23,7 +23,7 @@ function createUserRepository(pool) {
 
     async updateDisplayName(id, displayName) {
       await pool.execute(
-        'UPDATE users SET display_name = ? WHERE user_id = ?',
+        'UPDATE users SET display_name = $1 WHERE user_id = $2',
         [displayName, id],
       );
       return this.findById(id);
@@ -31,7 +31,7 @@ function createUserRepository(pool) {
 
     async findByEmailForLogin(email) {
       const [rows] = await pool.execute(
-        'SELECT user_id, email, display_name, role, password_hash FROM users WHERE email = ? LIMIT 1',
+        'SELECT user_id, email, display_name, role, password_hash FROM users WHERE email = $1 LIMIT 1',
         [email],
       );
       if (!rows[0]) {
@@ -47,11 +47,12 @@ function createUserRepository(pool) {
     async createLocalUser({ email, displayName, passwordHash }) {
       const [result] = await pool.execute(
         `INSERT INTO users (email, display_name, password_hash, role)
-         VALUES (?, ?, ?, 'student')`,
+         VALUES ($1, $2, $3, 'student')
+         RETURNING user_id`,
         [email, displayName, passwordHash],
       );
       return {
-        id: Number(result.insertId),
+        id: Number(result.rows?.[0]?.user_id ?? result.insertId),
         email,
         displayName,
         role: 'student',
@@ -68,12 +69,12 @@ function createUserRepository(pool) {
         await connection.beginTransaction();
 
         const [subjectRows] = await connection.execute(
-          'SELECT user_id, email, display_name, role FROM users WHERE google_subject = ? LIMIT 1 FOR UPDATE',
+          'SELECT user_id, email, display_name, role FROM users WHERE google_subject = $1 LIMIT 1 FOR UPDATE',
           [subject],
         );
         if (subjectRows.length > 0) {
           await connection.execute(
-            'UPDATE users SET email = ?, display_name = ? WHERE user_id = ?',
+            'UPDATE users SET email = $1, display_name = $2 WHERE user_id = $3',
             [email, displayName, subjectRows[0].user_id],
           );
           await connection.commit();
@@ -85,7 +86,7 @@ function createUserRepository(pool) {
         }
 
         const [emailRows] = await connection.execute(
-          'SELECT user_id, google_subject, email, display_name, role FROM users WHERE email = ? LIMIT 1 FOR UPDATE',
+          'SELECT user_id, google_subject, email, display_name, role FROM users WHERE email = $1 LIMIT 1 FOR UPDATE',
           [email],
         );
         if (emailRows.length > 0) {
@@ -94,7 +95,7 @@ function createUserRepository(pool) {
           }
 
           await connection.execute(
-            'UPDATE users SET google_subject = ?, display_name = ? WHERE user_id = ?',
+            'UPDATE users SET google_subject = $1, display_name = $2 WHERE user_id = $3',
             [subject, displayName, emailRows[0].user_id],
           );
           await connection.commit();
@@ -106,12 +107,13 @@ function createUserRepository(pool) {
 
         const [result] = await connection.execute(
           `INSERT INTO users (google_subject, email, display_name, role)
-           VALUES (?, ?, ?, 'student')`,
+           VALUES ($1, $2, $3, 'student')
+           RETURNING user_id`,
           [subject, email, displayName],
         );
         await connection.commit();
         return {
-          id: Number(result.insertId),
+          id: Number(result.rows?.[0]?.user_id ?? result.insertId),
           email,
           displayName,
           role: 'student',

@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('node:path');
+const { createDatabasePool } = require('./config/database');
 const { createEventRepository } = require('./repositories/event.repository');
 const { createMySqlRegistrationRepository } = require('./repositories/registration.repository');
 const { createAuthRouter } = require('./routes/auth.routes');
@@ -22,8 +23,11 @@ const { createWebPushService } = require('./services/web-push.service');
 
 const app = express();
 const clientDirectory = path.join(__dirname, '..', 'client');
-const eventRepository = createEventRepository();
-const auth = createAuthRouter();
+const databasePool = process.env.SUPABASE_DB_URL || process.env.DATABASE_URL
+  ? createDatabasePool()
+  : null;
+const eventRepository = createEventRepository({ pool: databasePool });
+const auth = createAuthRouter({ pool: databasePool });
 app.locals.eventDataSource = eventRepository.source;
 app.locals.googleSignInEnabled = auth.enabled;
 const asyncRoute = (handler) => (request, response, next) => {
@@ -31,6 +35,9 @@ const asyncRoute = (handler) => (request, response, next) => {
 };
 
 app.disable('x-powered-by');
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 app.use(express.json());
 app.use(auth.middleware);
 

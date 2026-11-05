@@ -37,7 +37,7 @@ test('lists only events owned by the requesting organizer', async () => {
   assert.equal(events[0].registeredCount, 4);
   assert.deepEqual(events[0].tags, ['Teams', 'Prizes']);
   assert.deepEqual(call.values, [24]);
-  assert.match(call.sql, /e\.organizer_id = \?/);
+  assert.match(call.sql, /e\.organizer_id = \$1/);
 });
 
 test('creates an event transactionally with parameterized owner and event values', async () => {
@@ -96,9 +96,9 @@ test('creates an event transactionally with parameterized owner and event values
   const insert = calls.find((call) => call.sql?.startsWith('INSERT INTO events'));
   assert.equal(insert.values[0], 'campus-build-123');
   assert.equal(insert.values[1], 24);
-  assert.equal(insert.values[6], '2027-01-10 09:00:00.000');
-  assert.equal(insert.values[7], '2027-01-10 18:00:00.000');
-  assert.equal(insert.values[8], '2027-01-09 23:59:00.000');
+  assert.equal(insert.values[6], '2027-01-10T09:00:00.000Z');
+  assert.equal(insert.values[7], '2027-01-10T18:00:00.000Z');
+  assert.equal(insert.values[8], '2027-01-09T23:59:00.000Z');
   assert.equal(insert.values[13], '["Teams"]');
   assert.equal(insert.sql.includes('24'), false);
 });
@@ -152,12 +152,12 @@ test('updates only an event belonging to the organizer', async () => {
   });
   assert.equal(updated.title, 'Updated Campus Build');
   const updateQuery = calls.find((call) => call.sql?.startsWith('UPDATE events'));
-  assert.equal(updateQuery.values[4], '2027-01-10 09:00:00.000');
-  assert.equal(updateQuery.values[5], '2027-01-10 18:00:00.000');
-  assert.equal(updateQuery.values[6], '2027-01-09 23:59:00.000');
+  assert.equal(updateQuery.values[4], '2027-01-10T09:00:00.000Z');
+  assert.equal(updateQuery.values[5], '2027-01-10T18:00:00.000Z');
+  assert.equal(updateQuery.values[6], '2027-01-09T23:59:00.000Z');
   assert.equal(updateQuery.values.at(-2), 'campus-build-123');
   assert.equal(updateQuery.values.at(-1), 24);
-  assert.match(updateQuery.sql, /WHERE event_id = \? AND organizer_id = \?/);
+  assert.match(updateQuery.sql, /WHERE event_id = \$14 AND organizer_id = \$15/);
 
   const notOwnedPool = {
     async getConnection() {
@@ -238,7 +238,7 @@ test('lists event registrations only after verifying event ownership', async () 
     email: 'student@example.edu',
   }]);
   assert.deepEqual(calls[0].values, ['campus-build-123', 24]);
-  assert.match(calls[0].sql, /organizer_id = \?/);
+  assert.match(calls[0].sql, /organizer_id = \$2/);
 
   const notOwned = createMySqlEventManagementRepository({
     async execute() {

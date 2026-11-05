@@ -4,7 +4,7 @@ const passport = require('passport');
 const { rateLimit } = require('express-rate-limit');
 const { createDatabasePool } = require('../config/database');
 const { configurePassport, getGoogleOAuthConfig } = require('../config/passport');
-const { MySqlSessionStore } = require('../storage/mysql-session-store');
+const { PostgresSessionStore } = require('../storage/postgres-session-store');
 const { createUserRepository } = require('../repositories/user.repository');
 const { hashPassword, validatePassword, verifyPassword } = require('../utils/password');
 
@@ -51,14 +51,14 @@ function getPublicUser(user) {
 function createAuthRouter({ env = process.env, pool: providedPool, userRepository: providedUsers } = {}) {
   const router = express.Router();
   const oauthConfig = getGoogleOAuthConfig(env);
-  const hasDatabaseConfig = Boolean(env.MYSQL_USER && env.MYSQL_DATABASE);
+  const hasDatabaseConfig = Boolean(env.SUPABASE_DB_URL || env.DATABASE_URL);
   const hasSessionSecret = typeof env.SESSION_SECRET === 'string' && env.SESSION_SECRET.length >= 32;
 
-  if (env.EVENTS_DATA_SOURCE === 'mysql' && hasDatabaseConfig && !hasSessionSecret) {
-    throw new Error('SESSION_SECRET must contain at least 32 characters when MySQL authentication is enabled.');
+  if (env.EVENTS_DATA_SOURCE === 'postgres' && hasDatabaseConfig && !hasSessionSecret) {
+    throw new Error('SESSION_SECRET must contain at least 32 characters when PostgreSQL authentication is enabled.');
   }
   if (oauthConfig && !hasDatabaseConfig) {
-    throw new Error('Google OAuth requires MYSQL_USER and MYSQL_DATABASE to be configured.');
+    throw new Error('Google OAuth requires SUPABASE_DB_URL or DATABASE_URL to be configured.');
   }
 
   const localAuthEnabled = hasDatabaseConfig && hasSessionSecret;
@@ -99,7 +99,7 @@ function createAuthRouter({ env = process.env, pool: providedPool, userRepositor
   }
 
   const pool = providedPool || createDatabasePool(env);
-  const store = new MySqlSessionStore(pool);
+  const store = new PostgresSessionStore(pool);
   const users = providedUsers || createUserRepository(pool);
   const authMiddleware = express.Router();
   const passwordLimiter = rateLimit({
@@ -237,7 +237,7 @@ function createAuthRouter({ env = process.env, pool: providedPool, userRepositor
       try {
         user = await users.createLocalUser({ email, displayName, passwordHash });
       } catch (error) {
-        if (error.code === 'ER_DUP_ENTRY') {
+        if (error.code === '23505') {
           response.status(409).json({ error: 'An account with that email already exists. Try signing in instead.' });
           return;
         }

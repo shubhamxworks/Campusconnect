@@ -14,7 +14,7 @@ function createMyEventsRouter({ repository, requireAuthenticated }) {
     requireAuthenticated,
     asyncRoute(async (request, response) => {
       if (!repository) {
-        response.status(503).json({ error: 'Your event registrations require MySQL to be configured.' });
+        response.status(503).json({ error: 'Your event registrations require PostgreSQL to be configured.' });
         return;
       }
 
