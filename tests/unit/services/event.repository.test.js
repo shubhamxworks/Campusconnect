@@ -26,10 +26,24 @@ test('validates Supabase PostgreSQL connection settings', () => {
 
   assert.equal(config.connectionString, 'postgresql://campusconnect:secret@db.example.supabase.co:5432/postgres');
   assert.deepEqual(config.ssl, { rejectUnauthorized: true });
+  assert.equal(new URL(config.connectionString).searchParams.has('sslmode'), false);
   assert.throws(
     () => getDatabaseConfig({ DATABASE_URL: 'https://example.com' }),
     /must use the postgres or postgresql protocol/,
   );
+});
+
+test('uses a supplied CA certificate while keeping TLS verification enabled', () => {
+  const config = getDatabaseConfig({
+    DATABASE_URL: 'postgresql://campusconnect:secret@db.example.supabase.co:5432/postgres?sslmode=require',
+    DATABASE_CA_CERT: '-----BEGIN CERTIFICATE-----\\ntrusted-root\\n-----END CERTIFICATE-----',
+  });
+
+  assert.deepEqual(config.ssl, {
+    ca: '-----BEGIN CERTIFICATE-----\ntrusted-root\n-----END CERTIFICATE-----',
+    rejectUnauthorized: true,
+  });
+  assert.equal(new URL(config.connectionString).searchParams.has('sslmode'), false);
 });
 
 test('maps database event rows and UTC date values to the API shape', () => {

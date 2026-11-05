@@ -1,23 +1,27 @@
 const { Pool } = require('pg');
 
 function getDatabaseConfig(env = process.env) {
-  const connectionString = env.SUPABASE_DB_URL || env.DATABASE_URL;
-  if (!connectionString) {
+  const rawConnectionString = env.SUPABASE_DB_URL || env.DATABASE_URL;
+  if (!rawConnectionString) {
     throw new Error('PostgreSQL mode requires SUPABASE_DB_URL or DATABASE_URL.');
   }
   let url;
   try {
-    url = new URL(connectionString);
+    url = new URL(rawConnectionString);
   } catch {
     throw new Error('DATABASE_URL must be a valid PostgreSQL connection URL.');
   }
   if (!['postgres:', 'postgresql:'].includes(url.protocol)) {
     throw new Error('DATABASE_URL must use the postgres or postgresql protocol.');
   }
+  for (const parameter of ['sslmode', 'sslcert', 'sslkey', 'sslrootcert', 'sslpassword']) {
+    url.searchParams.delete(parameter);
+  }
+  const ca = env.DATABASE_CA_CERT?.replace(/\\n/g, '\n').trim();
 
   return {
-    connectionString,
-    ssl: { rejectUnauthorized: true },
+    connectionString: url.toString(),
+    ssl: ca ? { ca, rejectUnauthorized: true } : { rejectUnauthorized: true },
     max: 10,
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 10_000,

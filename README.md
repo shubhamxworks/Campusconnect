@@ -25,7 +25,7 @@ Use `npm.cmd start` for a normal server start. Set `PORT` in `.env` to change th
 
 The root `render.yaml` defines a Render web service that runs the Express app and serves the frontend. CampusConnect uses Supabase PostgreSQL for accounts, registrations, organizer tools, and other database-backed features.
 
-Create a Supabase project first. In Render, create a Blueprint from the GitHub repository and provide the Supabase PostgreSQL connection string for `DATABASE_URL` when prompted. Use the Supabase session pooler URL for a persistent Node.js server. Keep database credentials private.
+Create a Supabase project first. In Render, create a Blueprint from the GitHub repository and provide the Supabase PostgreSQL connection string for `DATABASE_URL` when prompted. Use the Supabase session pooler URL for a persistent Node.js server. If Render reports a certificate-chain verification error, download the database CA certificate from Supabase and set its PEM contents as the private `DATABASE_CA_CERT` environment variable in Render. Certificate verification remains enabled. Keep database credentials and certificates private.
 
 After the Render service is deployed, run `npm run db:setup` from a local checkout with `DATABASE_URL` set to the Supabase connection string and `EVENTS_DATA_SOURCE=postgres`. This creates the tables and sample events. Then confirm `/api/health` reports `"dataSource":"postgres"`. Do not commit `.env` or put credentials in `render.yaml`.
 
